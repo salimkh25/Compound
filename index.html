@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מחשבון חיסכון וקצבה | כוחה של ריבית דריבית</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7));
+            --glass-bg: rgba(30, 41, 59, 0.5);
+        }
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.1), transparent 30%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.1), transparent 30%);
+            background-attachment: fixed;
+        }
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .input-modern {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .input-modern:focus {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .input-modern:disabled {
+            background: rgba(15, 23, 42, 0.4);
+            border-color: rgba(255, 255, 255, 0.05);
+            color: #64748b;
+        }
+        .btn-primary {
+            background: var(--primary-gradient);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(118, 75, 162, 0.2);
+        }
+        .result-card {
+            transition: all 0.3s ease;
+        }
+        .result-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .tab-modern {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .tab-modern.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3);
+        }
+        .switch-modern {
+            width: 48px; 
+            height: 24px; 
+            background: #334155;
+            border-radius: 12px; 
+            position: relative; 
+            transition: all 0.3s ease; 
+            cursor: pointer;
+        }
+        .switch-modern.active { 
+            background: var(--primary-gradient); 
+        }
+        .switch-handle {
+            width: 20px; 
+            height: 20px; 
+            background: white; 
+            border-radius: 50%;
+            position: absolute; 
+            top: 2px; 
+            right: 2px; 
+            transition: all 0.3s ease;
+        }
+        .switch-modern.active .switch-handle { 
+            right: 26px; 
+        }
+        .switch-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+        .chart-container {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            height: 400px;
+        }
+        .animate-slide-up {
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            gap: 0.5rem;
+        }
+        .radio-label input:checked + .radio-indicator { 
+            border-color: #3b82f6; 
+        }
+        .radio-label input:checked + .radio-indicator::after { 
+            transform: translate(-50%, -50%) scale(1); 
+        }
+        .radio-indicator { 
+            width: 20px; 
+            height: 20px; 
+            border: 2px solid #475569; 
+            border-radius: 50%; 
+            position: relative; 
+            transition: all 0.3s ease; 
+        }
+        .radio-indicator::after { 
+            content: ''; 
+            width: 10px; 
+            height: 10px; 
+            background: var(--primary-gradient); 
+            border-radius: 50%; 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%) scale(0); 
+            transition: transform 0.3s ease; 
+        }
+    </style>
+</head>
+<body class="text-slate-100">
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        <header class="text-center mb-12 animate-slide-up">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                מחשבון חיסכון וקצבה מתקדם
+            </h1>
+            <p class="text-lg text-slate-300 max-w-2xl mx-auto">
+                גלה את כוחה של ריבית דריבית ותכנן את עתידך הפיננסי בצורה חכמה ומדויקת
+            </p>
+        </header>
+
+        <div class="flex gap-2 mb-8 justify-center animate-slide-up" style="animation-delay: 0.2s;">
+            <button id="tabForward" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300 active">מחשבון עתידי</button>
+            <button id="tabReverse" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300">מחשבון יעד</button>
+        </div>
+
+        <div id="forwardCalculator" class="calculator-content animate-slide-up" style="animation-delay: 0.4s;">
+            <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="space-y-8">
+                    <div class="glass-card p-6 md:p-8 rounded-2xl">
+                        <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text border-b border-blue-400/20 pb-3">שלב 1: תכנון החיסכון</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="input-group">
+                                <label for="initialAmount" class="block text-sm font-medium text-slate-300 mb-2">סכום התחלתי (₪)</label>
+                                <input type="number" id="initialAmount" value="10000" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                            <div class="input-group">
+                                <label for="monthlyDeposit" class="block text-sm font-medium text-slate-300 mb-2">הפקדה חודשית (₪)</label>
+                                <input type="number" id="monthlyDeposit" value="500" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                            <div class="input-group">
+                                <label for="annualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">ריבית שנתية (%)  </label>
+                                <input type="number" id="annualInterestRate" value="7" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                            <div class="input-group">
+                                <label for="currentAge" class="block text-sm font-medium text-slate-300 mb-2">גיל נוכחי</label>
+                                <input type="number" id="currentAge" value="24" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                        </div>
+                        <div class="input-group mt-6">
+                            <label for="yearsOfSaving" class="block text-sm font-medium text-slate-300 mb-2">מספר שנות חיסכון</label>
+                            <input type="number" id="yearsOfSaving" value="40" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                        </div>
+                        
+                        <h3 class="text-lg font-semibold text-slate-300 mt-8 mb-4">הנחות מתקדמות</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="input-group">
+                                <label class="switch-label text-slate-300 mb-2">
+                                    <div class="switch-modern" data-for="includeInflation">
+                                        <div class="switch-handle"></div>
+                                    </div>
+                                    <span>התחשב באינפלציה</span>
+                                    <input type="checkbox" id="includeInflation" class="hidden">
+                                </label>
+                                <input type="number" id="inflationRate" value="2.5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled>
+                                <label class="text-xs text-slate-400 mt-1">אחוז אינפלציה שנתי</label>
+                            </div>
+                            <div class="input-group">
+                                <label class="switch-label text-slate-300 mb-2">
+                                    <div class="switch-modern" data-for="includeTax">
+                                        <div class="switch-handle"></div>
+                                    </div>
+                                    <span>התחשב במס</span>
+                                    <input type="checkbox" id="includeTax" class="hidden">
+                                </label>
+                                <input type="number" id="taxRate" value="25" min="0" max="100" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled>
+                                <label class="text-xs text-slate-400 mt-1">אחוז מס על רווחים</label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 mt-8">
+                            <div class="result-card glass-card p-4 rounded-xl">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="text-slate-400 text-sm font-medium">תחזית (אסטרטגיה חכמה)</h3>
+                                    <button id="useStrategyButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button>
+                                </div>
+                                <p id="futureValue" class="text-white text-3xl font-bold -mt-1">₪0</p>
+                                <div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2">
+                                    <div>
+                                        <span class="block">הפקדות</span>
+                                        <span id="totalDeposits" class="font-semibold text-slate-300">₪0</span>
+                                    </div>
+                                    <div>
+                                        <span class="block">ריבית</span>
+                                        <span id="totalInterest" class="font-semibold text-green-400">₪0</span>
+                                    </div>
+                                </div>
+                                <div id="realValueStrategy" class="text-xs text-cyan-300 mt-2"></div>
+                            </div>
+                            <div class="result-card glass-card p-4 rounded-xl">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="text-slate-400 text-sm font-medium">תחזית (הפקדה מלאה)</h3>
+                                    <button id="useFullDepositButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button>
+                                </div>
+                                <p id="fullDepositResult" class="text-white text-xl font-bold -mt-1">₪0</p>
+                                <div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2">
+                                    <div>
+                                        <span class="block">הפקדות</span>
+                                        <span id="fullTotalDeposits" class="font-semibold text-slate-300">₪0</span>
+                                    </div>
+                                    <div>
+                                        <span class="block">ריבית</span>
+                                        <span id="fullTotalInterest" class="font-semibold text-green-400">₪0</span>
+                                    </div>
+                                </div>
+                                <div id="realValueFull" class="text-xs text-cyan-300 mt-2"></div>
+                            </div>
+                            <div id="strategyCard" class="result-card glass-card p-4 rounded-xl bg-indigo-900/10 border-indigo-500/30">
+                                <h3 class="text-indigo-300 text-sm font-medium">אסטרטגיית הפקדה חכמה</h3>
+                                <div id="strategyResult" class="text-white text-sm space-y-2 mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="savingsChart"></canvas>
+                    </div>
+                </div>
+                <div class="space-y-8">
+                    <div class="glass-card p-6 md:p-8 rounded-2xl">
+                        <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text border-b border-amber-400/20 pb-3">שלב 2: מחשבון קצבה</h2>
+                        <div class="input-group mb-4">
+                            <label for="totalSavings" class="block text-sm font-medium text-slate-300 mb-2">הסכום שנצבר (₪)</label>
+                            <input type="number" id="totalSavings" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                        </div>
+                        <div class="input-group mb-4">
+                            <label for="pensionInterestRate" class="block text-sm font-medium text-slate-300 mb-2">ריבית שנתית על הצבירה (%)</label>
+                            <input type="number" id="pensionInterestRate" value="5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white">
+                        </div>
+                        <div class="input-group mb-4">
+                            <label for="yearsOfWithdrawal" class="block text-sm font-medium text-slate-300 mb-2">מספר שנות משיכה</label>
+                            <input type="number" id="yearsOfWithdrawal" value="30" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                        </div>
+                        <div class="space-y-3 mt-6">
+                            <div class="result-card glass-card p-3 rounded-lg">
+                                <h3 class="text-slate-400 text-xs">קצבה חודשית (לגמר הקרן)</h3>
+                                <p id="monthlyPension" class="text-amber-400 text-2xl font-bold">₪0</p>
+                            </div>
+                            <div class="result-card glass-card p-3 rounded-lg">
+                                <h3 class="text-slate-400 text-xs">משיכה בת-קיימא</h3>
+                                <p id="sustainableWithdrawal" class="text-green-400 text-2xl font-bold">₪0</p>
+                            </div>
+                            <div class="result-card glass-card p-3 rounded-lg">
+                                <h3 class="text-slate-400 text-xs">משיכה מומלצת (צמיחה 2%)</h3>
+                                <p id="growingWithdrawal" class="text-sky-400 text-2xl font-bold">₪0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="pensionChart"></canvas>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="reverseCalculator" class="calculator-content hidden">
+            <main class="glass-card p-6 md:p-8 rounded-2xl">
+                <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text border-b border-emerald-400/20 pb-3">חישוב הפוך: מהי ההפקדה הנדרשת?</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-300 mb-4">הגדרת היעד</h3>
+                        <div class="input-group mb-4">
+                            <label for="revDesiredIncome" class="block text-sm font-medium text-slate-300 mb-2">הכנסה חודשית רצויה (₪)</label>
+                            <input type="number" id="revDesiredIncome" value="10000" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                        </div>
+                        <div class="input-group mb-4">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">סוג ההכנסה</label>
+                            <div class="flex gap-4">
+                                <label class="radio-label text-slate-300">
+                                    <input type="radio" name="revGoalType" value="standardPension" checked class="hidden">
+                                    <div class="radio-indicator"></div>
+                                    <span>קצבה רגילה</span>
+                                </label>
+                                <label class="radio-label text-slate-300">
+                                    <input type="radio" name="revGoalType" value="growingPension" class="hidden">
+                                    <div class="radio-indicator"></div>
+                                    <span>משיכה מומלצת</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <div class="input-group">
+                                <label for="revPensionStartAge" class="block text-sm font-medium text-slate-300 mb-2">גיל תחילת קצבה</label>
+                                <input type="number" id="revPensionStartAge" value="67" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                            <div class="input-group">
+                                <label for="revCurrentAge" class="block text-sm font-medium text-slate-300 mb-2">גיל נוכחי</label>
+                                <input type="number" id="revCurrentAge" value="24" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                            <div class="input-group">
+                                <label for="revInitialAmount" class="block text-sm font-medium text-slate-300 mb-2">חיסכון התחלתי (₪)</label>
+                                <input type="number" id="revInitialAmount" value="10000" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                            <div id="revYearsOfWithdrawalGroup" class="input-group">
+                                <label for="revYearsOfWithdrawal" class="block text-sm font-medium text-slate-300 mb-2">שנות קצבה צפויות</label>
+                                <input type="number" id="revYearsOfWithdrawal" value="30" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-slate-300 mt-8 mb-4">הנחות יסוד</h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="input-group">
+                                <label for="revAnnualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">ריבית שנתית צפויה (%)</label>
+                                <input type="number" id="revAnnualInterestRate" value="7" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                            <div class="input-group">
+                                <label class="switch-label text-slate-300 mb-2">
+                                    <div class="switch-modern" data-for="revIncludeInflation">
+                                        <div class="switch-handle"></div>
+                                    </div>
+                                    <span>התחשב באינפלציה</span>
+                                    <input type="checkbox" id="revIncludeInflation" class="hidden">
+                                </label>
+                                <input type="number" id="revInflationRate" value="2.5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled>
+                            </div>
+                            <div class="input-group">
+                                <label class="switch-label text-slate-300 mb-2">
+                                    <div class="switch-modern" data-for="revIncludeTax">
+                                        <div class="switch-handle"></div>
+                                    </div>
+                                    <span>התחשב במס</span>
+                                    <input type="checkbox" id="revIncludeTax" class="hidden">
+                                </label>
+                                <input type="number" id="revTaxRate" value="25" min="0" max="100" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-300 mb-4">התוצאה: תוכנית הפעולה</h3>
+                        <div class="space-y-4">
+                            <div class="result-card glass-card p-4 rounded-xl bg-emerald-900/20 border-emerald-500/30">
+                                <h3 class="text-emerald-300 text-sm font-medium">הפקדה חודשית נדרשת</h3>
+                                <p id="revRequiredDeposit" class="text-white text-4xl font-bold">₪0</p>
+                            </div>
+                            <div class="result-card glass-card p-4 rounded-xl">
+                                <h3 class="text-slate-400 text-sm font-medium">הון נדרש בגיל הפרישה (נטו)</h3>
+                                <p id="revRequiredCapital" class="text-white text-2xl font-bold">₪0</p>
+                            </div>
+                            <div id="revStrategyCard" class="result-card glass-card p-4 rounded-xl bg-indigo-900/10 border-indigo-500/30">
+                                <h3 class="text-indigo-300 text-sm font-medium">אבני הדרך באסטרטגיה</h3>
+                                <div id="revStrategyResult" class="text-white text-sm space-y-2 mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <section class="mt-12 glass-card p-8 rounded-2xl animate-slide-up" style="animation-delay: 0.6s;">
+            <h2 class="text-3xl font-bold text-center mb-8 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">המדריך להשקעה חכמה</h2>
+            <div class="grid md:grid-cols-3 gap-8 text-slate-300">
+                <div class="p-4 rounded-lg hover:bg-white/5 transition-colors">
+                    <h3 class="text-xl font-semibold text-cyan-400 mb-3">כוחה של ריבית דריבית</h3>
+                    <p class="leading-relaxed">דמיין כדור שלג קטן שמתחיל להתגלגל מראש הר מושלג. בהתחלה הוא קטן, אבל ככל שהוא מתגלגל, הוא אוסף עוד ועוד שלג וגדל בקצב מהיר יותר ויותר. זו בדיוק ריבית דריבית: הרווחים שלך מצטרפים לקרן, ובשנה הבאה אתה מרוויח "ריבית על הריבית". לאורך זמן, האפקט הזה הופך מכוח קטן למנוע צמיחה אדיר.</p>
+                </div>
+                <div class="p-4 rounded-lg hover:bg-white/5 transition-colors">
+                    <h3 class="text-xl font-semibold text-purple-400 mb-3">הנשק הסודי: זמן</h3>
+                    <p class="leading-relaxed">המרכיב החשוב ביותר בכדור השלג הוא אורך המדרון. ככל שתתחיל מוקדם יותר, כך תיתן לכסף שלך יותר זמן לצמוח. <strong class="text-white">דוגמה:</strong> אם תחסוך 500 ₪ לחודש מגיל 24 עד 64 (40 שנה), תצבור (לפי האסטרטגיה החכמה) כ-1.5 מיליון ₪. אם תתחיל רק 10 שנים מאוחר יותר, בגיל 34, ותחסוך 30 שנה, תצבור רק כ-700 אלף ₪. העשור הראשון הזה שווה לך יותר מכל שאר החיסכון!</p>
+                </div>
+                <div class="p-4 rounded-lg hover:bg-white/5 transition-colors">
+                    <h3 class="text-xl font-semibold text-green-400 mb-3">אסטרטגיית משיכה</h3>
+                    <p class="leading-relaxed">בפרישה, יש לך שתי אפשרויות: "לאכול את העוגה" (קצבה רגילה) או "לחיות מהקצפת" (משיכה בת-קיימא). האפשרות הראשונה תיתן לך סכום חודשי גבוה יותר, אך תרוקן את החיסכון. השנייה תאפשר לך לחיות מהרווחים בלבד, מבלי לגעת בקרן, מה שמבטיח שהכסף שלך לעולם לא ייגמר וימשיך לצמוח עבורך ועבור הדורות הבאים.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // DOM Elements - Fixed selectors
+        const DOMElements = {
+            // Tabs
+            tabForward: document.getElementById('tabForward'),
+            tabReverse: document.getElementById('tabReverse'),
+            forwardCalculator: document.getElementById('forwardCalculator'),
+            reverseCalculator: document.getElementById('reverseCalculator'),
+            
+            // Forward Calculator
+            initialAmount: document.getElementById('initialAmount'),
+            monthlyDeposit: document.getElementById('monthlyDeposit'),
+            annualInterestRate: document.getElementById('annualInterestRate'),
+            currentAge: document.getElementById('currentAge'),
+            yearsOfSaving: document.getElementById('yearsOfSaving'),
+            
+            // Inflation & Tax switches - Fixed
+            includeInflation: document.getElementById('includeInflation'),
+            inflationRate: document.getElementById('inflationRate'),
+            inflationSwitch: document.querySelector('[data-for="includeInflation"]'),
+            includeTax: document.getElementById('includeTax'),
+            taxRate: document.getElementById('taxRate'),
+            taxSwitch: document.querySelector('[data-for="includeTax"]'),
+            
+            // Results
+            futureValue: document.getElementById('futureValue'),
+            realValueStrategy: document.getElementById('realValueStrategy'),
+            realValueFull: document.getElementById('realValueFull'),
+            fullDepositResult: document.getElementById('fullDepositResult'),
+            fullTotalDeposits: document.getElementById('fullTotalDeposits'),
+            fullTotalInterest: document.getElementById('fullTotalInterest'),
+            useFullDepositButton: document.getElementById('useFullDepositButton'),
+            totalDeposits: document.getElementById('totalDeposits'),
+            totalInterest: document.getElementById('totalInterest'),
+            strategyResult: document.getElementById('strategyResult'),
+            useStrategyButton: document.getElementById('useStrategyButton'),
+            
+            // Pension
+            totalSavings: document.getElementById('totalSavings'),
+            pensionInterestRate: document.getElementById('pensionInterestRate'),
+            yearsOfWithdrawal: document.getElementById('yearsOfWithdrawal'),
+            monthlyPension: document.getElementById('monthlyPension'),
+            sustainableWithdrawal: document.getElementById('sustainableWithdrawal'),
+            growingWithdrawal: document.getElementById('growingWithdrawal'),
+            
+            // Reverse Calculator
+            revDesiredIncome: document.getElementById('revDesiredIncome'),
+            revPensionStartAge: document.getElementById('revPensionStartAge'),
+            revCurrentAge: document.getElementById('revCurrentAge'),
+            revInitialAmount: document.getElementById('revInitialAmount'),
+            revAnnualInterestRate: document.getElementById('revAnnualInterestRate'),
+            revYearsOfWithdrawal: document.getElementById('revYearsOfWithdrawal'),
+            revYearsOfWithdrawalGroup: document.getElementById('revYearsOfWithdrawalGroup'),
+            
+            // Reverse switches - Fixed
+            revIncludeInflation: document.getElementById('revIncludeInflation'),
+            revInflationRate: document.getElementById('revInflationRate'),
+            revInflationSwitch: document.querySelector('[data-for="revIncludeInflation"]'),
+            revIncludeTax: document.getElementById('revIncludeTax'),
+            revTaxRate: document.getElementById('revTaxRate'),
+            revTaxSwitch: document.querySelector('[data-for="revIncludeTax"]'),
+            
+            // Reverse results
+            revRequiredDeposit: document.getElementById('revRequiredDeposit'),
+            revRequiredCapital: document.getElementById('revRequiredCapital'),
+            revStrategyResult: document.getElementById('revStrategyResult'),
+            revGoalTypeRadios: document.querySelectorAll('input[name="revGoalType"]')
+        };
+
+        let savingsChart, pensionChart;
+        const currencyFormatter = new Intl.NumberFormat('he-IL', { 
+            style: 'currency', 
+            currency: 'ILS', 
+            minimumFractionDigits: 0, 
+            maximumFractionDigits: 0 
+        });
+
+        // Math Functions - Verified and Fixed
+        function calculateSimpleFutureValue(P, M, r_annual, t) {
+            const r_monthly = r_annual / 12;
+            const n = t * 12;
+            
+            // Future value of initial amount: P * (1 + r)^n
+            let fv = P * Math.pow(1 + r_monthly, n);
+            
+            // Future value of annuity: M * [((1 + r)^n - 1) / r]
+            if (r_monthly > 0) {
+                fv += M * ((Math.pow(1 + r_monthly, n) - 1) / r_monthly);
+            } else {
+                fv += M * n; // No interest case
+            }
+            
+            const totalDeposits = P + (M * n);
+            return { fv, totalDeposits };
+        }
+
+        function runSavingsSimulation(P, M_initial, r_annual, t, currentAge) {
+            let balance = P;
+            let totalDeposits = P;
+            let M_current = M_initial;
+            const annualDepositInitial = M_initial * 12;
+            const r_monthly = r_annual / 12;
+            
+            let milestones = { reduceTo40: null, reduceTo0: null };
+            const yearlyData = { principal: [], deposits: [], interest: [] };
+
+            for (let year = 0; year < t; year++) {
+                let yearlyDeposits = 0;
+                const startOfYearBalance = balance;
+                
+                // Monthly deposits and compounding
+                for (let month = 1; month <= 12; month++) {
+                    balance += M_current;
+                    yearlyDeposits += M_current;
+                    balance *= (1 + r_monthly);
+                }
+                
+                totalDeposits += yearlyDeposits;
+                const interestThisYear = balance - startOfYearBalance - yearlyDeposits;
+
+                // Strategy milestones - Fixed logic
+                if (milestones.reduceTo0 === null && interestThisYear >= annualDepositInitial * 2) {
+                    milestones.reduceTo0 = { 
+                        age: currentAge + year + 1, 
+                        interest: interestThisYear 
+                    };
+                    M_current = 0; // Stop deposits
+                } else if (milestones.reduceTo40 === null && interestThisYear >= annualDepositInitial) {
+                    milestones.reduceTo40 = { 
+                        age: currentAge + year + 1, 
+                        interest: interestThisYear 
+                    };
+                    M_current = M_initial * 0.4; // Reduce to 40%
+                }
+                
+                // Store data for chart
+                const totalInterestForChart = balance - totalDeposits;
+                yearlyData.principal.push(P);
+                yearlyData.deposits.push(totalDeposits - P);
+                yearlyData.interest.push(Math.max(0, totalInterestForChart));
+            }
+            
+            return { 
+                finalBalance: balance, 
+                totalDeposits, 
+                totalInterest: balance - totalDeposits, 
+                milestones, 
+                chartData: yearlyData 
+            };
+        }
+
+        function calculateTaxAndInflation(grossAmount, totalInterest, totalDeposits, years, inflationRate, taxRate, useInflation, useTax) {
+            let netAmount = grossAmount;
+            
+            if (useTax && totalInterest > 0) {
+                // Calculate real gain (above inflation)
+                const inflationAdjustment = useInflation ? 
+                    totalDeposits * (Math.pow(1 + inflationRate, years) - 1) : 0;
+                const realGain = Math.max(0, totalInterest - inflationAdjustment);
+                const tax = realGain * taxRate;
+                netAmount -= tax;
+            }
+            
+            return netAmount;
+        }
+
+        function handleForwardCalculations() {
+            const P = Math.max(0, parseFloat(DOMElements.initialAmount.value)) || 0;
+            const M = Math.max(0, parseFloat(DOMElements.monthlyDeposit.value)) || 0;
+            const r_annual = Math.max(0, parseFloat(DOMElements.annualInterestRate.value)) / 100 || 0;
+            const t = Math.max(0, parseInt(DOMElements.yearsOfSaving.value)) || 0;
+            const currentAge = Math.max(0, parseInt(DOMElements.currentAge.value)) || 0;
+            
+            const useInflation = DOMElements.includeInflation.checked;
+            const inflationRate = useInflation ? (Math.max(0, parseFloat(DOMElements.inflationRate.value)) / 100 || 0) : 0;
+            const useTax = DOMElements.includeTax.checked;
+            const taxRate = useTax ? (Math.max(0, parseFloat(DOMElements.taxRate.value)) / 100 || 0) : 0;
+
+            // Full deposit strategy
+            const fullResult = calculateSimpleFutureValue(P, M, r_annual, t);
+            let fullDepositFV = calculateTaxAndInflation(
+                fullResult.fv, 
+                fullResult.fv - fullResult.totalDeposits, 
+                fullResult.totalDeposits, 
+                t, 
+                inflationRate, 
+                taxRate, 
+                useInflation, 
+                useTax
+            );
+            
+            DOMElements.fullDepositResult.textContent = currencyFormatter.format(fullDepositFV);
+            DOMElements.fullTotalDeposits.textContent = currencyFormatter.format(fullResult.totalDeposits);
+            DOMElements.fullTotalInterest.textContent = currencyFormatter.format(fullResult.fv - fullResult.totalDeposits);
+            DOMElements.useFullDepositButton.classList.remove('hidden');
+            DOMElements.useFullDepositButton.dataset.amount = Math.round(fullDepositFV);
+            DOMElements.realValueFull.textContent = useInflation ? 
+                `ערך ריאלי: ${currencyFormatter.format(fullDepositFV / Math.pow(1 + inflationRate, t))}` : '';
+
+            // Smart strategy or simple calculation
+            if (M === 0 || r_annual === 0) {
+                DOMElements.futureValue.textContent = currencyFormatter.format(fullDepositFV);
+                DOMElements.totalDeposits.textContent = currencyFormatter.format(fullResult.totalDeposits);
+                DOMElements.totalInterest.textContent = currencyFormatter.format(fullResult.fv - fullResult.totalDeposits);
+                DOMElements.strategyResult.innerHTML = `<div class="text-slate-400">נדרשת הפקדה חודשית וריבית כדי לחשב אסטרטגיה.</div>`;
+                DOMElements.useStrategyButton.classList.add('hidden');
+                DOMElements.realValueStrategy.textContent = useInflation ? 
+                    `ערך ריאלי: ${currencyFormatter.format(fullDepositFV / Math.pow(1 + inflationRate, t))}` : '';
+                updateSavingsChart(P, M, r_annual/12, t);
+            } else {
+                const sim = runSavingsSimulation(P, M, r_annual, t, currentAge);
+                let strategyFV = calculateTaxAndInflation(
+                    sim.finalBalance, 
+                    sim.totalInterest, 
+                    sim.totalDeposits, 
+                    t, 
+                    inflationRate, 
+                    taxRate, 
+                    useInflation, 
+                    useTax
+                );
+                
+                DOMElements.futureValue.textContent = currencyFormatter.format(strategyFV);
+                DOMElements.totalDeposits.textContent = currencyFormatter.format(sim.totalDeposits);
+                DOMElements.totalInterest.textContent = currencyFormatter.format(sim.totalInterest);
+                DOMElements.totalSavings.value = Math.round(strategyFV);
+                updateStrategyCard(sim.milestones, M, DOMElements.strategyResult);
+                DOMElements.useStrategyButton.classList.remove('hidden');
+                DOMElements.useStrategyButton.dataset.amount = Math.round(strategyFV);
+                DOMElements.realValueStrategy.textContent = useInflation ? 
+                    `ערך ריאלי: ${currencyFormatter.format(strategyFV / Math.pow(1 + inflationRate, t))}` : '';
+                updateSavingsChart(P, M, r_annual/12, t, sim.chartData);
+            }
+            
+            calculatePension();
+        }
+
+        function handleReverseCalculations() {
+            const desiredIncome = Math.max(0, parseFloat(DOMElements.revDesiredIncome.value)) || 0;
+            const pensionStartAge = Math.max(0, parseInt(DOMElements.revPensionStartAge.value)) || 0;
+            const currentAge = Math.max(0, parseInt(DOMElements.revCurrentAge.value)) || 0;
+            const P = Math.max(0, parseFloat(DOMElements.revInitialAmount.value)) || 0;
+            const r_annual = Math.max(0, parseFloat(DOMElements.revAnnualInterestRate.value)) / 100 || 0;
+            const pensionYears = Math.max(0, parseInt(DOMElements.revYearsOfWithdrawal.value)) || 0;
+            const goalType = document.querySelector('input[name="revGoalType"]:checked').value;
+            
+            const useInflation = DOMElements.revIncludeInflation.checked;
+            const inflationRate = useInflation ? (Math.max(0, parseFloat(DOMElements.revInflationRate.value)) / 100 || 0) : 0;
+            const useTax = DOMElements.revIncludeTax.checked;
+            const taxRate = useTax ? (Math.max(0, parseFloat(DOMElements.revTaxRate.value)) / 100 || 0) : 0;
+            
+            // Show/hide pension years input based on goal type
+            if (goalType === 'growingPension') {
+                DOMElements.revYearsOfWithdrawalGroup.style.opacity = '0.5';
+                DOMElements.revYearsOfWithdrawal.disabled = true;
+            } else {
+                DOMElements.revYearsOfWithdrawalGroup.style.opacity = '1';
+                DOMElements.revYearsOfWithdrawal.disabled = false;
+            }
+
+            const savingYears = pensionStartAge - currentAge;
+            if (savingYears <= 0 || r_annual === 0) {
+                DOMElements.revRequiredDeposit.textContent = "שגיאה";
+                DOMElements.revRequiredCapital.textContent = "בדוק נתונים";
+                DOMElements.revStrategyResult.innerHTML = `<div class="text-red-400">לא ניתן לחשב. ודא שגיל הפרישה גבוה מהגיל הנוכחי ושהריבית חיובית.</div>`;
+                return;
+            }
+
+            let requiredCapitalNet = 0;
+            
+            if (goalType === 'standardPension') {
+                // Annuity calculation with inflation adjustment
+                const r_real_pension = useInflation ? (1 + r_annual) / (1 + inflationRate) - 1 : r_annual;
+                const r_monthly_real_pension = r_real_pension / 12;
+                const n_pension = pensionYears * 12;
+                
+                if (r_monthly_real_pension > 0) {
+                    requiredCapitalNet = desiredIncome * ((1 - Math.pow(1 + r_monthly_real_pension, -n_pension)) / r_monthly_real_pension);
+                } else {
+                    requiredCapitalNet = desiredIncome * n_pension;
+                }
+            } else { // growingPension
+                const growthTarget = 0.02; // 2% real growth
+                const r_real = useInflation ? (1 + r_annual) / (1 + inflationRate) - 1 : r_annual;
+                
+                if (r_real <= growthTarget) {
+                    DOMElements.revRequiredDeposit.textContent = "בלתי אפשרי";
+                    DOMElements.revRequiredCapital.textContent = "הריבית הריאלית חייבת להיות גבוהה מ-2%";
+                    DOMElements.revStrategyResult.innerHTML = `<div class="text-red-400">לא ניתן להשיג צמיחה ריאלית של 2% עם הריבית והאינפלציה הנתונות.</div>`;
+                    return;
+                }
+                
+                // Capital needed for perpetual withdrawal with 2% growth
+                requiredCapitalNet = (desiredIncome * 12) / (r_real - growthTarget);
+            }
+            
+            DOMElements.revRequiredCapital.textContent = currencyFormatter.format(requiredCapitalNet);
+
+            // Binary search for required monthly deposit
+            let low = 0, high = desiredIncome * 3; // Increased upper bound
+            let requiredM = 0;
+            
+            for (let i = 0; i < 100; i++) { // Increased iterations for accuracy
+                const mid = (low + high) / 2;
+                const sim = runSavingsSimulation(P, mid, r_annual, savingYears, currentAge);
+                
+                let finalNetBalance = calculateTaxAndInflation(
+                    sim.finalBalance, 
+                    sim.totalInterest, 
+                    sim.totalDeposits, 
+                    savingYears, 
+                    inflationRate, 
+                    taxRate, 
+                    useInflation, 
+                    useTax
+                );
+                
+                // Adjust for inflation to get real purchasing power
+                const finalRealBalance = useInflation ? 
+                    finalNetBalance / Math.pow(1 + inflationRate, savingYears) : finalNetBalance;
+
+                if (finalRealBalance < requiredCapitalNet) {
+                    low = mid;
+                } else {
+                    high = mid;
+                }
+                
+                // Convergence check
+                if (Math.abs(high - low) < 0.01) break;
+            }
+            
+            requiredM = (low + high) / 2;
+            DOMElements.revRequiredDeposit.textContent = currencyFormatter.format(requiredM);
+
+            // Show strategy for required deposit
+            const finalSim = runSavingsSimulation(P, requiredM, r_annual, savingYears, currentAge);
+            updateStrategyCard(finalSim.milestones, requiredM, DOMElements.revStrategyResult);
+        }
+
+        function updateStrategyCard(milestones, M_initial, element) {
+            let html = '';
+            
+            if (milestones.reduceTo40) {
+                html += `<div class="mb-2">🎯 <strong>שלב 1 - גיל ${milestones.reduceTo40.age}:</strong><br>
+                         הריבית השנתית (<span class="text-green-400">${currencyFormatter.format(milestones.reduceTo40.interest)}</span>) 
+                         עוקפת את ההפקדה השנתית המקורית.<br>
+                         <span class="text-slate-400">מומלץ להוריד הפקדה ל-${currencyFormatter.format(M_initial * 0.4)}/חודש (40%).</span></div>`;
+            } else {
+                html += `<div class="mb-2 text-slate-400">שלב 1 (הורדה ל-40%) לא הושג בתקופת החיסכון.</div>`;
+            }
+            
+            if (milestones.reduceTo0) {
+                html += `<div>🚀 <strong>שלב 2 - גיל ${milestones.reduceTo0.age}:</strong><br>
+                         הריבית השנתית (<span class="text-green-400">${currencyFormatter.format(milestones.reduceTo0.interest)}</span>) 
+                         כפולה מההפקדה השנתית המקורית.<br>
+                         <span class="text-slate-400">מומלץ להפסיק הפקדות לחלוטין - הריבית תעשה את העבודה!</span></div>`;
+            } else {
+                html += `<div class="text-slate-400">שלב 2 (הפסקה מלאה) לא הושג בתקופת החיסכון.</div>`;
+            }
+            
+            element.innerHTML = html;
+        }
+
+        function updateSavingsChart(P, M, r_monthly, t, chartData = null) {
+            const years = Array.from({ length: Math.min(t + 1, 50) }, (_, i) => i); // Limit to 50 years for performance
+            let data;
+            
+            if (chartData) {
+                data = chartData;
+            } else {
+                data = { principal: [], deposits: [], interest: [] };
+                for (let i = 0; i <= Math.min(t, 49); i++) {
+                    const n = i * 12;
+                    let fv = P * Math.pow(1 + r_monthly, n);
+                    if (r_monthly > 0) {
+                        fv += M * ((Math.pow(1 + r_monthly, n) - 1) / r_monthly);
+                    } else {
+                        fv += M * n;
+                    }
+                    const totalDeposits = P + (M * n);
+                    data.principal.push(P);
+                    data.deposits.push(totalDeposits - P);
+                    data.interest.push(Math.max(0, fv - totalDeposits));
+                }
+            }
+
+            const ctx = document.getElementById('savingsChart').getContext('2d');
+            if (savingsChart) savingsChart.destroy();
+            
+            savingsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: years.map(y => `שנה ${y}`),
+                    datasets: [
+                        {
+                            label: 'ריבית',
+                            data: data.interest,
+                            backgroundColor: '#22c55e',
+                            borderColor: '#16a34a',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'הפקדות',
+                            data: data.deposits,
+                            backgroundColor: '#3b82f6',
+                            borderColor: '#2563eb',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'קרן ראשונית',
+                            data: data.principal,
+                            backgroundColor: '#64748b',
+                            borderColor: '#475569',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'צמיחת החיסכון לאורך זמן',
+                            color: '#f1f5f9',
+                            font: { size: 16 }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                footer: function(tooltipItems) {
+                                    let total = 0;
+                                    tooltipItems.forEach(item => total += item.raw);
+                                    return `סה"כ: ${currencyFormatter.format(total)}`;
+                                }
+                            }
+                        },
+                        legend: {
+                            labels: { color: '#94a3b8' }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            stacked: true,
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: value => currencyFormatter.format(value)
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function calculatePension() {
+            const PV = Math.max(0, parseFloat(DOMElements.totalSavings.value)) || 0;
+            const r_annual = Math.max(0, parseFloat(DOMElements.pensionInterestRate.value)) / 100 || 0;
+            const t = Math.max(0, parseInt(DOMElements.yearsOfWithdrawal.value)) || 0;
+            const r_monthly = r_annual / 12;
+            const n = t * 12;
+            
+            // Monthly pension (annuity payment)
+            let monthlyPension = 0;
+            if (r_monthly > 0 && n > 0) {
+                monthlyPension = PV * (r_monthly * Math.pow(1 + r_monthly, n)) / (Math.pow(1 + r_monthly, n) - 1);
+            } else if (n > 0) {
+                monthlyPension = PV / n;
+            }
+            
+            // Sustainable withdrawal (interest only)
+            const sustainableWithdrawal = PV * r_monthly;
+            
+            // Growing withdrawal (2% real growth target)
+            const targetGrowthRate = 0.02; // 2% annual
+            const growingWithdrawal = (r_annual > targetGrowthRate) ? 
+                PV * ((r_annual - targetGrowthRate) / 12) : 0;
+            
+            DOMElements.monthlyPension.textContent = currencyFormatter.format(monthlyPension);
+            DOMElements.sustainableWithdrawal.textContent = currencyFormatter.format(sustainableWithdrawal);
+            DOMElements.growingWithdrawal.textContent = currencyFormatter.format(growingWithdrawal);
+            
+            updatePensionChart(PV, monthlyPension, r_monthly, t, targetGrowthRate);
+        }
+        
+        function updatePensionChart(PV, pmt, r_monthly, t, targetGrowthRate) {
+            const ctx = document.getElementById('pensionChart');
+            if (!ctx) return;
+            const context = ctx.getContext('2d');
+            
+            const years = Array.from({ length: Math.min(t + 1, 40) }, (_, i) => i); // Limit for performance
+            const balanceDepletion = [];
+            const balanceGrowth = [];
+            
+            for (let i = 0; i <= Math.min(t, 39); i++) {
+                const n = i * 12;
+                
+                // Balance with regular pension withdrawals
+                let balance = PV;
+                if (r_monthly > 0) {
+                    balance = PV * Math.pow(1 + r_monthly, n) - pmt * ((Math.pow(1 + r_monthly, n) - 1) / r_monthly);
+                } else {
+                    balance = PV - pmt * n;
+                }
+                balanceDepletion.push(Math.max(0, balance));
+                
+                // Balance with growing withdrawal strategy
+                balanceGrowth.push(PV * Math.pow(1 + (targetGrowthRate / 12), n));
+            }
+            
+            if (pensionChart) pensionChart.destroy();
+            
+            pensionChart = new Chart(context, {
+                type: 'line',
+                data: {
+                    labels: years.map(y => `שנה ${y}`),
+                    datasets: [
+                        {
+                            label: 'יתרה במשיכת קצבה',
+                            data: balanceDepletion,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                            fill: true,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'יתרה במשיכה מומלצת (צמיחה)',
+                            data: balanceGrowth,
+                            borderColor: '#38bdf8',
+                            backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                            fill: true,
+                            tension: 0.2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'התפתחות הקרן בתרחישי משיכה',
+                            color: '#f1f5f9',
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: { color: '#94a3b8' }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: value => currencyFormatter.format(value)
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Toggle switch functionality - Fixed
+        function setupToggle(checkbox, input, switchEl) {
+            // Click handler for the switch element
+            switchEl.addEventListener('click', (e) => {
+                e.preventDefault();
+                checkbox.checked = !checkbox.checked;
+                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+            
+            // Change handler for the checkbox
+            checkbox.addEventListener('change', () => {
+                input.disabled = !checkbox.checked;
+                switchEl.classList.toggle('active', checkbox.checked);
+                
+                // Trigger calculations
+                if (!DOMElements.forwardCalculator.classList.contains('hidden')) {
+                    handleForwardCalculations();
+                }
+                if (!DOMElements.reverseCalculator.classList.contains('hidden')) {
+                    handleReverseCalculations();
+                }
+            });
+            
+            // Initialize state
+            input.disabled = !checkbox.checked;
+            switchEl.classList.toggle('active', checkbox.checked);
+        }
+
+        // Event Listeners Setup
+        function setupEventListeners() {
+            // Forward calculator inputs
+            const forwardInputs = [
+                DOMElements.initialAmount,
+                DOMElements.monthlyDeposit,
+                DOMElements.annualInterestRate,
+                DOMElements.currentAge,
+                DOMElements.yearsOfSaving,
+                DOMElements.inflationRate,
+                DOMElements.taxRate
+            ];
+            forwardInputs.forEach(el => {
+                if (el) el.addEventListener('input', handleForwardCalculations);
+            });
+            
+            // Pension inputs
+            const pensionInputs = [
+                DOMElements.totalSavings,
+                DOMElements.pensionInterestRate,
+                DOMElements.yearsOfWithdrawal
+            ];
+            pensionInputs.forEach(el => {
+                if (el) el.addEventListener('input', calculatePension);
+            });
+            
+            // Reverse calculator inputs
+            const reverseInputs = [
+                DOMElements.revDesiredIncome,
+                DOMElements.revPensionStartAge,
+                DOMElements.revCurrentAge,
+                DOMElements.revInitialAmount,
+                DOMElements.revAnnualInterestRate,
+                DOMElements.revYearsOfWithdrawal,
+                DOMElements.revInflationRate,
+                DOMElements.revTaxRate
+            ];
+            reverseInputs.forEach(el => {
+                if (el) el.addEventListener('input', handleReverseCalculations);
+            });
+            
+            // Radio buttons for reverse calculator
+            DOMElements.revGoalTypeRadios.forEach(radio => {
+                radio.addEventListener('change', handleReverseCalculations);
+            });
+
+            // Toggle switches setup
+            if (DOMElements.includeInflation && DOMElements.inflationRate && DOMElements.inflationSwitch) {
+                setupToggle(DOMElements.includeInflation, DOMElements.inflationRate, DOMElements.inflationSwitch);
+            }
+            if (DOMElements.includeTax && DOMElements.taxRate && DOMElements.taxSwitch) {
+                setupToggle(DOMElements.includeTax, DOMElements.taxRate, DOMElements.taxSwitch);
+            }
+            if (DOMElements.revIncludeInflation && DOMElements.revInflationRate && DOMElements.revInflationSwitch) {
+                setupToggle(DOMElements.revIncludeInflation, DOMElements.revInflationRate, DOMElements.revInflationSwitch);
+            }
+            if (DOMElements.revIncludeTax && DOMElements.revTaxRate && DOMElements.revTaxSwitch) {
+                setupToggle(DOMElements.revIncludeTax, DOMElements.revTaxRate, DOMElements.revTaxSwitch);
+            }
+
+            // Copy buttons
+            if (DOMElements.useStrategyButton) {
+                DOMElements.useStrategyButton.addEventListener('click', (e) => {
+                    const amount = e.currentTarget.dataset.amount;
+                    if (amount && DOMElements.totalSavings) {
+                        DOMElements.totalSavings.value = amount;
+                        calculatePension();
+                    }
+                });
+            }
+            
+            if (DOMElements.useFullDepositButton) {
+                DOMElements.useFullDepositButton.addEventListener('click', (e) => {
+                    const amount = e.currentTarget.dataset.amount;
+                    if (amount && DOMElements.totalSavings) {
+                        DOMElements.totalSavings.value = amount;
+                        calculatePension();
+                    }
+                });
+            }
+            
+            // Tab switching
+            if (DOMElements.tabForward) {
+                DOMElements.tabForward.addEventListener('click', () => {
+                    DOMElements.tabForward.classList.add('active');
+                    DOMElements.tabReverse.classList.remove('active');
+                    DOMElements.forwardCalculator.classList.remove('hidden');
+                    DOMElements.reverseCalculator.classList.add('hidden');
+                });
+            }
+            
+            if (DOMElements.tabReverse) {
+                DOMElements.tabReverse.addEventListener('click', () => {
+                    DOMElements.tabReverse.classList.add('active');
+                    DOMElements.tabForward.classList.remove('active');
+                    DOMElements.reverseCalculator.classList.remove('hidden');
+                    DOMElements.forwardCalculator.classList.add('hidden');
+                    handleReverseCalculations();
+                });
+            }
+        }
+
+        // Radio button functionality fix
+        function setupRadioButtons() {
+            DOMElements.revGoalTypeRadios.forEach(radio => {
+                const label = radio.closest('.radio-label');
+                if (label) {
+                    label.addEventListener('click', (e) => {
+                        if (e.target.tagName.toLowerCase() !== 'input') {
+                            radio.checked = true;
+                            radio.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    });
+                }
+            });
+        }
+
+        // Input validation
+        function validateInputs() {
+            const inputs = document.querySelectorAll('input[type="number"]');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Remove negative values except for specific cases
+                    if (parseFloat(this.value) < 0) {
+                        this.value = 0;
+                    }
+                    
+                    // Limit percentage inputs
+                    if (this.id.includes('Rate') && parseFloat(this.value) > 100) {
+                        this.value = 100;
+                    }
+                    
+                    // Limit age inputs
+                    if (this.id.includes('Age') && parseFloat(this.value) > 120) {
+                        this.value = 120;
+                    }
+                    
+                    // Limit years
+                    if ((this.id.includes('years') || this.id.includes('Years')) && parseFloat(this.value) > 80) {
+                        this.value = 80;
+                    }
+                });
+                
+                // Format on blur for better UX
+                input.addEventListener('blur', function() {
+                    if (this.value && !isNaN(this.value)) {
+                        const val = parseFloat(this.value);
+                        if (this.step && this.step === '0.1') {
+                            this.value = val.toFixed(1);
+                        } else {
+                            this.value = Math.round(val);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            setupRadioButtons();
+            validateInputs();
+            
+            // Initial calculations
+            handleForwardCalculations();
+            
+            // Add smooth animations
+            const animatedElements = document.querySelectorAll('.animate-slide-up');
+            animatedElements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.animationDelay = `${index * 0.1}s`;
+                }, 100);
+            });
+        });
+
+        // Performance optimization - debounce rapid inputs
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Apply debouncing to heavy calculations
+        const debouncedForwardCalc = debounce(handleForwardCalculations, 300);
+        const debouncedReverseCalc = debounce(handleReverseCalculations, 300);
+        const debouncedPensionCalc = debounce(calculatePension, 200);
+
+        // Error handling wrapper
+        function safeExecute(func, fallback = () => {}) {
+            try {
+                return func();
+            } catch (error) {
+                console.error('Calculation error:', error);
+                fallback();
+                return null;
+            }
+        }
+
+        // Accessibility improvements
+        function improveAccessibility() {
+            // Add ARIA labels
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                const label = document.querySelector(`label[for="${input.id}"]`);
+                if (label && !input.getAttribute('aria-label')) {
+                    input.setAttribute('aria-label', label.textContent);
+                }
+            });
+            
+            // Add keyboard navigation for switches
+            const switches = document.querySelectorAll('.switch-modern');
+            switches.forEach(switchEl => {
+                switchEl.setAttribute('tabindex', '0');
+                switchEl.setAttribute('role', 'button');
+                switchEl.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        switchEl.click();
+                    }
+                });
+            });
+        }
+
+        // Call accessibility improvements
+        document.addEventListener('DOMContentLoaded', improveAccessibility);
+
+        // Export functions for testing (optional)
+        window.calculatorFunctions = {
+            calculateSimpleFutureValue,
+            runSavingsSimulation,
+            calculateTaxAndInflation,
+            handleForwardCalculations,
+            handleReverseCalculations,
+            calculatePension
+        };
+    </script>
+</body>
+</html>
