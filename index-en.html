@@ -6,16 +6,34 @@
     <title>Advanced Savings & Pension Calculator | The Power of Compound Interest</title>
     
     <script>
-       (function() {
+     (function() {
     const he_page = 'index.html';
     const en_page = 'index-en.html';
     const ar_page = 'index-ar.html';
     const ts = '?t=' + new Date().getTime(); // Timestamp to bust cache
 
+    // Cookie helper functions
+    function setCookie(name, value, days = 365) {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
+    }
+
+    function getCookie(name) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
     // First check if user has manually selected a language
-    const savedLang = localStorage.getItem('user_lang');
+    const savedLang = getCookie('user_lang');
     if (savedLang) {
-        const currentPage = window.location.pathname.split('/').pop();
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
         if (savedLang === 'he' && currentPage !== he_page) {
             window.location.replace(he_page + ts);
             return;
@@ -33,13 +51,13 @@
     // Only if no saved preference, use browser language detection
     const userLang = navigator.language || navigator.userLanguage;
     if (userLang.startsWith('he')) {
-        localStorage.setItem('user_lang', 'he'); // Save the detected preference
+        setCookie('user_lang', 'he'); // Save the detected preference
         window.location.replace(he_page + ts);
     } else if (userLang.startsWith('ar')) {
-        localStorage.setItem('user_lang', 'ar'); // Save the detected preference
+        setCookie('user_lang', 'ar'); // Save the detected preference
         window.location.replace(ar_page + ts);
     } else {
-        localStorage.setItem('user_lang', 'en'); // Save the detected preference
+        setCookie('user_lang', 'en'); // Save the detected preference
         // Already on English page, no redirect needed
     }
 })();
@@ -114,15 +132,15 @@
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
                 </button>
-                <div id="lang-dropdown" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden" role="menu">
+                <div id="lang-dropdown" class="origin-top-right absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden" role="menu">
                     <div class="py-1" role="none">
-                        <a href="index-en.html" onclick="localStorage.setItem('user_lang', 'en')" class="lang-dropdown-item text-slate-200 font-semibold block px-4 py-2 text-sm text-center" role="menuitem">
-                           <span class="flex items-center justify-center text-lg">🇺🇸<span class="mx-2">English</span></span>
-                        </a>
-                        <a href="index.html" onclick="localStorage.setItem('user_lang', 'he')" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
+                        <a href="index.html" onclick="setCookie('user_lang', 'he', 365)" class="lang-dropdown-item text-slate-200 font-semibold block px-4 py-2 text-sm text-center" role="menuitem">
                            <span class="flex items-center justify-center text-lg">🇮🇱<span class="mx-2">עברית</span></span>
                         </a>
-                        <a href="index-ar.html" onclick="localStorage.setItem('user_lang', 'ar')" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
+                        <a href="index-en.html" onclick="setCookie('user_lang', 'en', 365)" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
+                           <span class="flex items-center justify-center text-lg">🇬🇧<span class="mx-2">English</span></span>
+                        </a>
+                        <a href="index-ar.html" onclick="setCookie('user_lang', 'ar', 365)" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
                            <span class="flex items-center justify-center text-lg">🇦🇪<span class="mx-2">العربية</span></span>
                         </a>
                     </div>
@@ -616,6 +634,23 @@
             input.disabled = !checkbox.checked;
             switchEl.classList.toggle('active', checkbox.checked);
         }
+        // Cookie helper functions for language switcher
+function setCookie(name, value, days = 365) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
 
         function setupEventListeners() {
             const forwardInputs = [ DOMElements.initialAmount, DOMElements.monthlyDeposit, DOMElements.annualInterestRate, DOMElements.currentAge, DOMElements.yearsOfSaving, DOMElements.inflationRate, DOMElements.taxRate ];
