@@ -1,42 +1,28 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחשבון חיסכון וקצבה | כוחה של ריבית דריבית</title>
+    <title>حاسبة الادخار والتقاعد المتقدمة | قوة الفائدة المركبة</title>
     
     <script>
         (function() {
-            // הגדרת שמות הקבצים לשפות השונות
             const he_page = 'index.html';
             const en_page = 'index-en.html';
             const ar_page = 'index-ar.html';
-
-            // שלב 1: בדוק אם קיימת העדפת שפה שמורה בדפדפן
             const savedLang = localStorage.getItem('user_lang');
             if (savedLang) {
                 const currentPage = window.location.pathname.split('/').pop();
-                
-                // בצע הפניה רק אם אנחנו לא כבר בעמוד הנכון
-                if (savedLang === 'en' && currentPage !== en_page) {
-                    window.location.replace(en_page);
-                } else if (savedLang === 'ar' && currentPage !== ar_page) {
-                    window.location.replace(ar_page);
-                } else if (savedLang === 'he' && currentPage !== he_page) {
-                    window.location.replace(he_page);
-                }
-                return; // אם טיפלנו בבחירה שמורה, סיים את הסקריפט כאן
+                if (savedLang === 'en' && currentPage !== en_page) window.location.replace(en_page);
+                else if (savedLang === 'ar' && currentPage !== ar_page) window.location.replace(ar_page);
+                else if (savedLang === 'he' && currentPage !== he_page) window.location.replace(he_page);
+                return;
             }
-
-            // שלב 2: אם אין בחירה שמורה, בצע זיהוי אוטומטי לפי שפת הדפדפן
-            const userLang = navigator.language || navigator.userLanguage; // "he-IL", "en-US", "ar-EG" etc.
-            
-            // אנחנו כבר בדף העברי, אז נבדוק רק אם צריך להפנות לשפות אחרות
-            if (userLang.startsWith('ar')) {
-                window.location.replace(ar_page);
-            } else if (!userLang.startsWith('he')) {
-                // אם השפה אינה עברית, הפנה לאנגלית כברירת מחדל
+            const userLang = navigator.language || navigator.userLanguage;
+            if (userLang.startsWith('en')) {
                 window.location.replace(en_page);
+            } else if (userLang.startsWith('he')) {
+                 window.location.replace(he_page);
             }
         })();
     </script>
@@ -46,6 +32,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6032822392451748"
      crossorigin="anonymous"></script>
@@ -56,6 +43,9 @@
             --card-bg: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.7));
             --glass-bg: rgba(30, 41, 59, 0.5);
         }
+        html[dir="rtl"] body {
+            font-family: 'Tajawal', 'Rubik', sans-serif;
+        }
         body {
             font-family: 'Rubik', sans-serif;
             background-color: #0f172a;
@@ -64,13 +54,7 @@
                 radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.1), transparent 30%);
             background-attachment: fixed;
         }
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
         .input-modern { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
         .input-modern:focus { background: rgba(30, 41, 59, 0.9); border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
         .input-modern:disabled { background: rgba(15, 23, 42, 0.4); border-color: rgba(255, 255, 255, 0.05); color: #64748b; }
@@ -82,8 +66,11 @@
         .tab-modern.active { background: var(--primary-gradient); color: white; box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3); }
         .switch-modern { width: 48px; height: 24px; background: #334155; border-radius: 12px; position: relative; transition: all 0.3s ease; cursor: pointer; }
         .switch-modern.active { background: var(--primary-gradient); }
-        .switch-handle { width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; right: 2px; transition: all 0.3s ease; }
-        .switch-modern.active .switch-handle { right: 26px; }
+        .switch-handle { width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; transition: all 0.3s ease; }
+        html[dir="ltr"] .switch-handle { left: 2px; }
+        html[dir="rtl"] .switch-handle { right: 2px; }
+        html[dir="ltr"] .switch-modern.active .switch-handle { left: 26px; }
+        html[dir="rtl"] .switch-modern.active .switch-handle { right: 26px; }
         .switch-label { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
         .chart-container { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(10px); border-radius: 1rem; border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem; height: 400px; }
         .animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; }
@@ -95,291 +82,157 @@
         .radio-indicator::after { content: ''; width: 10px; height: 10px; background: var(--primary-gradient); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); transition: transform 0.3s ease; }
         .info-icon { display: inline-block; width: 18px; height: 18px; border-radius: 50%; background-color: #475569; color: #e2e8f0; text-align: center; font-size: 12px; font-weight: bold; line-height: 18px; cursor: help; transition: background-color 0.3s ease; }
         .ad-banner { background-color: rgba(30, 41, 59, 0.3); margin: 2.5rem auto; border-radius: 1rem; width: 100%; max-width: 970px; min-height: 90px; display: flex; justify-content: center; align-items: center; overflow: hidden; color: #475569; }
-        .sidebar-ad {
-            width: 160px; /* Standard width for skyscraper ads */
-            height: 600px; /* Standard height */
-            margin: 0 auto;
-            background-color: rgba(30, 41, 59, 0.3);
-            border-radius: 1rem;
-        }
-        .lang-switcher a {
-            transition: all 0.2s ease-in-out;
-        }
-        .lang-switcher a:hover {
-            opacity: 0.8;
-            transform: scale(1.05);
-        }
+        .sidebar-ad { width: 160px; height: 600px; margin: 0 auto; background-color: rgba(30, 41, 59, 0.3); border-radius: 1rem; }
+        .lang-dropdown-button:focus, .lang-dropdown-button:focus-visible { outline: none; box-shadow: 0 0 0 2px #0f172a, 0 0 0 4px #3b82f6; }
+        .lang-dropdown-item:focus, .lang-dropdown-item:focus-visible { outline: none; background-color: #334155; }
     </style>
 </head>
 <body class="text-slate-100">
 
-    <div class="lang-switcher bg-slate-900/50 py-2 px-4 mb-4">
-        <div class="max-w-7xl mx-auto flex justify-end items-center gap-4 text-sm">
-            <a href="index.html" onclick="localStorage.setItem('user_lang', 'he')" class="font-semibold text-white">🇮🇱 עברית</a>
-            <a href="index-en.html" onclick="localStorage.setItem('user_lang', 'en')" class="text-slate-300 hover:text-white">🇬🇧 English</a>
-            <a href="index-ar.html" onclick="localStorage.setItem('user_lang', 'ar')" class="text-slate-300 hover:text-white">🇦🇪 العربية</a>
+    <div class="bg-slate-900/50 py-2 px-4 mb-4">
+        <div class="max-w-7xl mx-auto flex justify-end">
+            <div class="relative inline-block text-left" id="lang-switcher-wrapper">
+                <button type="button" class="lang-dropdown-button inline-flex items-center justify-center w-full rounded-md border border-slate-600 shadow-sm px-4 py-2 bg-slate-800 text-sm font-medium text-slate-200 hover:bg-slate-700 transition" id="lang-dropdown-button">
+                    <span id="current-lang-flag" class="ml-2 text-lg">🇦🇪</span>
+                    <span id="current-lang-text">العربية</span>
+                    <svg class="mr-2 -ml-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <div id="lang-dropdown" class="origin-top-right absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden" role="menu">
+                    <div class="py-1" role="none">
+                        <a href="index-ar.html" onclick="localStorage.setItem('user_lang', 'ar')" class="lang-dropdown-item text-slate-200 font-semibold block px-4 py-2 text-sm text-center" role="menuitem">
+                           <span class="flex items-center justify-center text-lg">🇦🇪<span class="mx-2">العربية</span></span>
+                        </a>
+                        <a href="index-en.html" onclick="localStorage.setItem('user_lang', 'en')" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
+                           <span class="flex items-center justify-center text-lg">🇺🇸<span class="mx-2">English</span></span>
+                        </a>
+                        <a href="index.html" onclick="localStorage.setItem('user_lang', 'he')" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
+                           <span class="flex items-center justify-center text-lg">🇮🇱<span class="mx-2">עברית</span></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="grid lg:grid-cols-[1fr_minmax(0,1280px)_1fr] gap-4">
-        
         <aside class="hidden lg:flex justify-center pt-32">
             <div class="sidebar-ad sticky top-8">
-                <ins class="adsbygoogle"
-                     style="display:inline-block;width:160px;height:600px"
-                     data-ad-client="ca-pub-6032822392451748"
-                     data-ad-slot="2235502204"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+                <ins class="adsbygoogle" style="display:inline-block;width:160px;height:600px" data-ad-client="ca-pub-6032822392451748" data-ad-slot="2235502204"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
         </aside>
-
         <div class="container mx-auto p-4 md:p-8 w-full">
             <header class="text-center mb-12 animate-slide-up">
-                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                    מחשבון חיסכון וקצבה מתקדם
-                </h1>
-                <p class="text-lg text-slate-300 max-w-2xl mx-auto">
-                    גלה את אפקט הריבית דריבית ותכנן את עתידך הפיננסי באופן מדויק ואסטרטגי.
-                </p>
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">حاسبة الادخار والتقاعد المتقدمة</h1>
+                <p class="text-lg text-slate-300 max-w-2xl mx-auto">اكتشف قوة الفائدة المركبة وخطط لمستقبلك المالي بدقة واستراتيجية.</p>
             </header>
-
             <div class="flex gap-2 mb-8 justify-center animate-slide-up" style="animation-delay: 0.2s;">
-                <button id="tabForward" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300 active">תחזית חיסכון</button>
-                <button id="tabReverse" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300">תכנון יעד</button>
+                <button id="tabForward" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300 active">توقعات الادخار</button>
+                <button id="tabReverse" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300">تخطيط الأهداف</button>
             </div>
-
             <div id="forwardCalculator" class="calculator-content animate-slide-up" style="animation-delay: 0.4s;">
                 <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="space-y-8">
                         <div class="glass-card p-6 md:p-8 rounded-2xl">
-                            <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text border-b border-blue-400/20 pb-3">שלב 1: פרמטרים לחיסכון</h2>
+                            <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text border-b border-blue-400/20 pb-3">الخطوة 1: معايير الادخار</h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="input-group">
-                                    <label for="initialAmount" class="block text-sm font-medium text-slate-300 mb-2">סכום התחלתי (₪)</label>
-                                    <input type="number" id="initialAmount" value="10000" min="0" class="w-full p-3 rounded-lg input-modern text-white">
-                                </div>
-                                <div class="input-group">
-                                    <label for="monthlyDeposit" class="block text-sm font-medium text-slate-300 mb-2">הפקדה חודשית (₪)</label>
-                                    <input type="number" id="monthlyDeposit" value="500" min="0" class="w-full p-3 rounded-lg input-modern text-white">
-                                </div>
-                                <div class="input-group">
-                                    <label for="annualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">תשואה שנתית צפויה (%)</label>
-                                    <input type="number" id="annualInterestRate" value="7" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white">
-                                </div>
-                                <div class="input-group">
-                                    <label for="currentAge" class="block text-sm font-medium text-slate-300 mb-2">גיל נוכחי</label>
-                                    <input type="number" id="currentAge" value="24" min="0" class="w-full p-3 rounded-lg input-modern text-white">
-                                </div>
+                                <div class="input-group"><label for="initialAmount" class="block text-sm font-medium text-slate-300 mb-2">المبلغ المبدئي (AED)</label><input type="number" id="initialAmount" value="40000" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                                <div class="input-group"><label for="monthlyDeposit" class="block text-sm font-medium text-slate-300 mb-2">الإيداع الشهري (AED)</label><input type="number" id="monthlyDeposit" value="2000" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                                <div class="input-group"><label for="annualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">العائد السنوي المتوقع (%)</label><input type="number" id="annualInterestRate" value="7" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                                <div class="input-group"><label for="currentAge" class="block text-sm font-medium text-slate-300 mb-2">العمر الحالي</label><input type="number" id="currentAge" value="24" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
                             </div>
-                            <div class="input-group mt-6">
-                                <label for="yearsOfSaving" class="block text-sm font-medium text-slate-300 mb-2">מספר שנות חיסכון</label>
-                                <input type="number" id="yearsOfSaving" value="40" min="0" class="w-full p-3 rounded-lg input-modern text-white">
-                            </div>
-                            
-                            <h3 class="text-lg font-semibold text-slate-300 mt-8 mb-4">הנחות מתקדמות</h3>
+                            <div class="input-group mt-6"><label for="yearsOfSaving" class="block text-sm font-medium text-slate-300 mb-2">عدد سنوات الادخار</label><input type="number" id="yearsOfSaving" value="40" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                            <h3 class="text-lg font-semibold text-slate-300 mt-8 mb-4">افتراضات متقدمة</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="input-group">
-                                    <label class="switch-label text-slate-300 mb-2">
-                                        <div class="switch-modern" data-for="includeInflation">
-                                            <div class="switch-handle"></div>
-                                        </div>
-                                        <span>התחשב באינפלציה</span>
-                                        <input type="checkbox" id="includeInflation" class="hidden">
-                                    </label>
-                                    <input type="number" id="inflationRate" value="2.5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled>
-                                    <label class="text-xs text-slate-400 mt-1">אחוז אינפלציה שנתי</label>
-                                </div>
-                                <div class="input-group">
-                                    <label class="switch-label text-slate-300 mb-2">
-                                        <div class="switch-modern" data-for="includeTax">
-                                            <div class="switch-handle"></div>
-                                        </div>
-                                        <span>התחשב במס רווחי הון</span>
-                                        <input type="checkbox" id="includeTax" class="hidden">
-                                    </label>
-                                    <input type="number" id="taxRate" value="25" min="0" max="100" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled>
-                                    <label class="text-xs text-slate-400 mt-1">אחוז מס על רווחים ריאליים</label>
-                                </div>
+                                <div class="input-group"><label class="switch-label text-slate-300 mb-2"><div class="switch-modern" data-for="includeInflation"><div class="switch-handle"></div></div><span>احتساب التضخم</span><input type="checkbox" id="includeInflation" class="hidden"></label><input type="number" id="inflationRate" value="2.5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled><label class="text-xs text-slate-400 mt-1">نسبة التضخم السنوي</label></div>
+                                <div class="input-group"><label class="switch-label text-slate-300 mb-2"><div class="switch-modern" data-for="includeTax"><div class="switch-handle"></div></div><span>احتساب ضريبة الأرباح الرأسمالية</span><input type="checkbox" id="includeTax" class="hidden"></label><input type="number" id="taxRate" value="0" min="0" max="100" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled><label class="text-xs text-slate-400 mt-1">نسبة الضريبة على الأرباح الحقيقية</label></div>
                             </div>
-
                             <div class="space-y-4 mt-8">
-                                <div class="result-card glass-card p-4 rounded-xl">
-                                    <div class="flex justify-between items-start">
-                                        <h3 class="text-slate-400 text-sm font-medium">תחזית (אסטרטגיה דינמית)</h3>
-                                        <button id="useStrategyButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button>
-                                    </div>
-                                    <p id="futureValue" class="text-white text-3xl font-bold -mt-1">₪0</p>
-                                    <div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2">
-                                        <div><span class="block">סה"כ הפקדות</span><span id="totalDeposits" class="font-semibold text-slate-300">₪0</span></div>
-                                        <div><span class="block">סה"כ תשואה</span><span id="totalInterest" class="font-semibold text-green-400">₪0</span></div>
-                                    </div>
-                                    <div id="realValueStrategy" class="text-xs text-cyan-300 mt-2"></div>
-                                </div>
-                                <div class="result-card glass-card p-4 rounded-xl">
-                                    <div class="flex justify-between items-start">
-                                        <h3 class="text-slate-400 text-sm font-medium">תחזית (הפקדה רציפה)</h3>
-                                        <button id="useFullDepositButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button>
-                                    </div>
-                                    <p id="fullDepositResult" class="text-white text-xl font-bold -mt-1">₪0</p>
-                                    <div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2">
-                                        <div><span class="block">סה"כ הפקדות</span><span id="fullTotalDeposits" class="font-semibold text-slate-300">₪0</span></div>
-                                        <div><span class="block">סה"כ תשואה</span><span id="fullTotalInterest" class="font-semibold text-green-400">₪0</span></div>
-                                    </div>
-                                    <div id="realValueFull" class="text-xs text-cyan-300 mt-2"></div>
-                                </div>
-                                <div id="strategyCard" class="result-card glass-card p-4 rounded-xl bg-indigo-900/10 border-indigo-500/30">
-                                    <h3 class="text-indigo-300 text-sm font-medium">אבני דרך באסטרטגיה הדינמית</h3>
-                                    <div id="strategyResult" class="text-white text-sm space-y-2 mt-2"></div>
-                                </div>
+                                <div class="result-card glass-card p-4 rounded-xl"><div class="flex justify-between items-start"><h3 class="text-slate-400 text-sm font-medium">التوقع (استراتيجية ديناميكية)</h3><button id="useStrategyButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">استخدام</button></div><p id="futureValue" class="text-white text-3xl font-bold -mt-1">0 AED</p><div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2"><div><span class="block">إجمالي الإيداعات</span><span id="totalDeposits" class="font-semibold text-slate-300">0 AED</span></div><div><span class="block">إجمالي العائد</span><span id="totalInterest" class="font-semibold text-green-400">0 AED</span></div></div><div id="realValueStrategy" class="text-xs text-cyan-300 mt-2"></div></div>
+                                <div class="result-card glass-card p-4 rounded-xl"><div class="flex justify-between items-start"><h3 class="text-slate-400 text-sm font-medium">التوقع (إيداع مستمر)</h3><button id="useFullDepositButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">استخدام</button></div><p id="fullDepositResult" class="text-white text-xl font-bold -mt-1">0 AED</p><div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2"><div><span class="block">إجمالي الإيداعات</span><span id="fullTotalDeposits" class="font-semibold text-slate-300">0 AED</span></div><div><span class="block">إجمالي العائد</span><span id="fullTotalInterest" class="font-semibold text-green-400">0 AED</span></div></div><div id="realValueFull" class="text-xs text-cyan-300 mt-2"></div></div>
+                                <div id="strategyCard" class="result-card glass-card p-4 rounded-xl bg-indigo-900/10 border-indigo-500/30"><h3 class="text-indigo-300 text-sm font-medium">محطات الاستراتيجية الديناميكية</h3><div id="strategyResult" class="text-white text-sm space-y-2 mt-2"></div></div>
                             </div>
                         </div>
-                        <div class="chart-container">
-                            <canvas id="savingsChart"></canvas>
-                        </div>
+                        <div class="chart-container"><canvas id="savingsChart"></canvas></div>
                     </div>
                     <div class="space-y-8">
                         <div class="glass-card p-6 md:p-8 rounded-2xl">
-                            <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text border-b border-amber-400/20 pb-3">שלב 2: תכנון קצבה</h2>
-                            <div class="input-group mb-4">
-                                <label for="totalSavings" class="block text-sm font-medium text-slate-300 mb-2">סכום ההון שנצבר (₪)</label>
-                                <input type="number" id="totalSavings" min="0" class="w-full p-3 rounded-lg input-modern text-white">
-                            </div>
-                            <div class="input-group mb-4">
-                                <label for="pensionInterestRate" class="block text-sm font-medium text-slate-300 mb-2">תשואה שנתית על הצבירה (%)</label>
-                                <input type="number" id="pensionInterestRate" value="5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white">
-                            </div>
-                            <div class="input-group mb-4">
-                                <label for="yearsOfWithdrawal" class="block text-sm font-medium text-slate-300 mb-2">מספר שנות משיכה</label>
-                                <input type="number" id="yearsOfWithdrawal" value="30" min="0" class="w-full p-3 rounded-lg input-modern text-white">
-                            </div>
+                            <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text border-b border-amber-400/20 pb-3">الخطوة 2: تخطيط المعاش التقاعدي</h2>
+                            <div class="input-group mb-4"><label for="totalSavings" class="block text-sm font-medium text-slate-300 mb-2">رأس المال المتراكم (AED)</label><input type="number" id="totalSavings" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                            <div class="input-group mb-4"><label for="pensionInterestRate" class="block text-sm font-medium text-slate-300 mb-2">العائد السنوي على المدخرات (%)</label><input type="number" id="pensionInterestRate" value="5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                            <div class="input-group mb-4"><label for="yearsOfWithdrawal" class="block text-sm font-medium text-slate-300 mb-2">عدد سنوات السحب</label><input type="number" id="yearsOfWithdrawal" value="30" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
                             <div class="space-y-3 mt-6">
-                                <div class="result-card glass-card p-3 rounded-lg">
-                                    <h3 class="text-slate-400 text-xs">קצבה חודשית (למיצוי הקרן)</h3>
-                                    <p id="monthlyPension" class="text-amber-400 text-2xl font-bold">₪0</p>
-                                </div>
-                                <div class="result-card glass-card p-3 rounded-lg">
-                                    <h3 class="text-slate-400 text-xs flex items-center relative group">
-                                        משיכה בת-קיימא
-                                        <span class="info-icon ml-2" tabindex="0">ⓘ</span>
-                                        <div class="absolute bottom-full right-1/2 translate-x-1/2 mb-2 w-64 p-3 bg-slate-700 rounded-lg shadow-lg text-sm text-slate-200 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10">
-                                            משיכה מרווחי ההון בלבד (התשואה), מבלי לפגוע בסכום הקרן המקורי. מבטיח שההון לא יתכלה עם הזמן.
-                                        </div>
-                                    </h3>
-                                    <p id="sustainableWithdrawal" class="text-green-400 text-2xl font-bold">₪0</p>
-                                </div>
-                                <div class="result-card glass-card p-3 rounded-lg">
-                                    <h3 class="text-slate-400 text-xs">משיכה עם צמיחה ריאלית (2%)</h3>
-                                    <p id="growingWithdrawal" class="text-sky-400 text-2xl font-bold">₪0</p>
-                                </div>
+                                <div class="result-card glass-card p-3 rounded-lg"><h3 class="text-slate-400 text-xs">المعاش الشهري (مع استهلاك رأس المال)</h3><p id="monthlyPension" class="text-amber-400 text-2xl font-bold">0 AED</p></div>
+                                <div class="result-card glass-card p-3 rounded-lg"><h3 class="text-slate-400 text-xs flex items-center relative group">السحب المستدام<span class="info-icon mr-2" tabindex="0">ⓘ</span><div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-slate-700 rounded-lg shadow-lg text-sm text-slate-200 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10 text-right">سحب أرباح رأس المال (العائد) فقط، دون المساس بالمبلغ الأساسي. هذا يضمن عدم نفاد رأس المال بمرور الوقت.</div></h3><p id="sustainableWithdrawal" class="text-green-400 text-2xl font-bold">0 AED</p></div>
+                                <div class="result-card glass-card p-3 rounded-lg"><h3 class="text-slate-400 text-xs">السحب مع نمو حقيقي (2%)</h3><p id="growingWithdrawal" class="text-sky-400 text-2xl font-bold">0 AED</p></div>
                             </div>
                         </div>
-                        <div class="chart-container">
-                            <canvas id="pensionChart"></canvas>
-                        </div>
+                        <div class="chart-container"><canvas id="pensionChart"></canvas></div>
                     </div>
                 </main>
             </div>
-
             <div id="reverseCalculator" class="calculator-content hidden">
                 <main class="glass-card p-6 md:p-8 rounded-2xl">
-                    <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text border-b border-emerald-400/20 pb-3">חישוב הפוך: מהי ההפקדה הנדרשת?</h2>
+                    <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text border-b border-emerald-400/20 pb-3">الحساب العكسي: ما هو الإيداع المطلوب؟</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
-                            <h3 class="text-lg font-semibold text-slate-300 mb-4">הגדרת היעד</h3>
-                            <div class="input-group mb-4">
-                                <label for="revDesiredIncome" class="block text-sm font-medium text-slate-300 mb-2">הכנסה חודשית רצויה (₪)</label>
-                                <input type="number" id="revDesiredIncome" value="10000" min="0" class="w-full p-3 rounded-lg input-modern text-white">
-                            </div>
-                            <div class="input-group mb-4">
-                                <label class="block text-sm font-medium text-slate-300 mb-2">סוג ההכנסה</label>
-                                <div class="flex gap-4">
-                                    <label class="radio-label text-slate-300"><input type="radio" name="revGoalType" value="standardPension" checked class="hidden"><div class="radio-indicator"></div><span>קצבה רגילה</span></label>
-                                    <label class="radio-label text-slate-300"><input type="radio" name="revGoalType" value="growingPension" class="hidden"><div class="radio-indicator"></div><span>משיכה עם צמיחה</span></label>
-                                </div>
-                            </div>
+                            <h3 class="text-lg font-semibold text-slate-300 mb-4">تحديد الهدف</h3>
+                            <div class="input-group mb-4"><label for="revDesiredIncome" class="block text-sm font-medium text-slate-300 mb-2">الدخل الشهري المرغوب (AED)</label><input type="number" id="revDesiredIncome" value="20000" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                            <div class="input-group mb-4"><label class="block text-sm font-medium text-slate-300 mb-2">نوع الدخل</label><div class="flex gap-4"><label class="radio-label text-slate-300"><input type="radio" name="revGoalType" value="standardPension" checked class="hidden"><div class="radio-indicator"></div><span>معاش تقاعدي عادي</span></label><label class="radio-label text-slate-300"><input type="radio" name="revGoalType" value="growingPension" class="hidden"><div class="radio-indicator"></div><span>سحب مع نمو</span></label></div></div>
                             <div class="grid grid-cols-2 gap-4 mt-4">
-                                <div class="input-group"><label for="revPensionStartAge" class="block text-sm font-medium text-slate-300 mb-2">גיל תחילת קצבה</label><input type="number" id="revPensionStartAge" value="67" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
-                                <div class="input-group"><label for="revCurrentAge" class="block text-sm font-medium text-slate-300 mb-2">גיל נוכחי</label><input type="number" id="revCurrentAge" value="24" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
-                                <div class="input-group"><label for="revInitialAmount" class="block text-sm font-medium text-slate-300 mb-2">חיסכון התחלתי (₪)</label><input type="number" id="revInitialAmount" value="10000" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
-                                <div id="revYearsOfWithdrawalGroup" class="input-group"><label for="revYearsOfWithdrawal" class="block text-sm font-medium text-slate-300 mb-2">שנות קצבה צפויות</label><input type="number" id="revYearsOfWithdrawal" value="30" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                                <div class="input-group"><label for="revPensionStartAge" class="block text-sm font-medium text-slate-300 mb-2">سن بدء التقاعد</label><input type="number" id="revPensionStartAge" value="67" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                                <div class="input-group"><label for="revCurrentAge" class="block text-sm font-medium text-slate-300 mb-2">العمر الحالي</label><input type="number" id="revCurrentAge" value="24" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                                <div class="input-group"><label for="revInitialAmount" class="block text-sm font-medium text-slate-300 mb-2">المدخرات المبدئية (AED)</label><input type="number" id="revInitialAmount" value="40000" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                                <div id="revYearsOfWithdrawalGroup" class="input-group"><label for="revYearsOfWithdrawal" class="block text-sm font-medium text-slate-300 mb-2">سنوات التقاعد المتوقعة</label><input type="number" id="revYearsOfWithdrawal" value="30" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
                             </div>
-                            <h3 class="text-lg font-semibold text-slate-300 mt-8 mb-4">הנחות יסוד</h3>
+                            <h3 class="text-lg font-semibold text-slate-300 mt-8 mb-4">الافتراضات الأساسية</h3>
                             <div class="grid grid-cols-1 gap-4">
-                                <div class="input-group"><label for="revAnnualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">תשואה שנתית צפויה (%)</label><input type="number" id="revAnnualInterestRate" value="7" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white"></div>
-                                <div class="input-group"><label class="switch-label text-slate-300 mb-2"><div class="switch-modern" data-for="revIncludeInflation"><div class="switch-handle"></div></div><span>התחשב באינפלציה</span><input type="checkbox" id="revIncludeInflation" class="hidden"></label><input type="number" id="revInflationRate" value="2.5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled></div>
-                                <div class="input-group"><label class="switch-label text-slate-300 mb-2"><div class="switch-modern" data-for="revIncludeTax"><div class="switch-handle"></div></div><span>התחשב במס רווחי הון</span><input type="checkbox" id="revIncludeTax" class="hidden"></label><input type="number" id="revTaxRate" value="25" min="0" max="100" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled></div>
+                                <div class="input-group"><label for="revAnnualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">العائد السنوي المتوقع (%)</label><input type="number" id="revAnnualInterestRate" value="7" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                                <div class="input-group"><label class="switch-label text-slate-300 mb-2"><div class="switch-modern" data-for="revIncludeInflation"><div class="switch-handle"></div></div><span>احتساب التضخم</span><input type="checkbox" id="revIncludeInflation" class="hidden"></label><input type="number" id="revInflationRate" value="2.5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled></div>
+                                <div class="input-group"><label class="switch-label text-slate-300 mb-2"><div class="switch-modern" data-for="revIncludeTax"><div class="switch-handle"></div></div><span>احتساب ضريبة الأرباح الرأسمالية</span><input type="checkbox" id="revIncludeTax" class="hidden"></label><input type="number" id="revTaxRate" value="0" min="0" max="100" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled></div>
                             </div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-slate-300 mb-4">התוצאה: תוכנית הפעולה</h3>
-                            <div class="space-y-4">
-                                <div class="result-card glass-card p-4 rounded-xl bg-emerald-900/20 border-emerald-500/30"><h3 class="text-emerald-300 text-sm font-medium">הפקדה חודשית נדרשת</h3><p id="revRequiredDeposit" class="text-white text-4xl font-bold">₪0</p></div>
-                                <div class="result-card glass-card p-4 rounded-xl"><h3 class="text-slate-400 text-sm font-medium">הון נדרש בגיל הפרישה (נטו)</h3><p id="revRequiredCapital" class="text-white text-2xl font-bold">₪0</p></div>
-                                <div id="revStrategyCard" class="result-card glass-card p-4 rounded-xl bg-indigo-900/10 border-indigo-500/30"><h3 class="text-indigo-300 text-sm font-medium">אבני הדרך באסטרטגיה</h3><div id="revStrategyResult" class="text-white text-sm space-y-2 mt-2"></div></div>
-                            </div>
+                            <h3 class="text-lg font-semibold text-slate-300 mb-4">النتيجة: خطة العمل</h3>
+                            <div class="space-y-4"><div class="result-card glass-card p-4 rounded-xl bg-emerald-900/20 border-emerald-500/30"><h3 class="text-emerald-300 text-sm font-medium">الإيداع الشهري المطلوب</h3><p id="revRequiredDeposit" class="text-white text-4xl font-bold">0 AED</p></div><div class="result-card glass-card p-4 rounded-xl"><h3 class="text-slate-400 text-sm font-medium">رأس المال المطلوب عند التقاعد (صافي)</h3><p id="revRequiredCapital" class="text-white text-2xl font-bold">0 AED</p></div><div id="revStrategyCard" class="result-card glass-card p-4 rounded-xl bg-indigo-900/10 border-indigo-500/30"><h3 class="text-indigo-300 text-sm font-medium">محطات الاستراتيجية</h3><div id="revStrategyResult" class="text-white text-sm space-y-2 mt-2"></div></div></div>
                         </div>
                     </div>
                 </main>
             </div>
-            
             <div class="ad-banner animate-slide-up" style="animation-delay: 0.5s;">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-6032822392451748"
-                     data-ad-slot="6652710628"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6032822392451748" data-ad-slot="6652710628" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
-
             <section class="mt-12 glass-card p-8 rounded-2xl animate-slide-up" style="animation-delay: 0.6s;">
-                <h2 class="text-3xl font-bold text-center mb-8 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">המדריך להשקעה חכמה</h2>
+                <h2 class="text-3xl font-bold text-center mb-8 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">دليل الاستثمار الذكي</h2>
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-slate-300">
-                    <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-cyan-400 mb-3">אפקט הריבית דריבית</h3><p class="leading-relaxed">הרווחים שההשקעה שלך מניבה מצטרפים לסכום המקורי (הקרן), ובשנה הבאה, אתה מרוויח תשואה גם על הקרן וגם על הרווחים שנצברו. לאורך זמן, אפקט ה"ריבית על ריבית" הזה הופך מכוח קטן למנוע צמיחה אקספוננציאלי.</p></div>
-                    <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-purple-400 mb-3">חשיבותו של טווח ההשקעה</h3><p class="leading-relaxed">הגורם המשמעותי ביותר בהשקעה הוא זמן. ככל שתתחיל להשקיע מוקדם יותר, כך תעניק לכספך אופק זמן ארוך יותר לצמוח. <strong class="text-white">דוגמה:</strong> חיסכון של 500 ₪ לחודש מגיל 24 יניב סכום גבוה משמעותית מחיסכון של סכום זהה שמתחיל בגיל 34, גם אם סך ההפקדות נמוך יותר.</p></div>
-                    <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-orange-400 mb-3">אסטרטגיית המשיכה</h3><p class="leading-relaxed">בפרישה, ניתן למשוך קצבה שתכלה את הקרן לאורך זמן, או "לחיות מהתשואה" - משיכה בת-קיימא שמשמרת את הקרן ומאפשרת לה להמשיך לצמוח. לכל אסטרטגיה יתרונות וחסרונות מבחינת גובה הקצבה החודשית ושימור ההון.</p></div>
-                    <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-green-400 mb-3">אופטימיזציה: אסטרטגיה דינמית</h3><p class="leading-relaxed">בתחילת הדרך, ההפקדות שלך הן מנוע הצמיחה העיקרי. עם הזמן, הריבית דריבית הופכת למנוע החזק יותר. אסטרטגיה דינמית מזהה את נקודת המפנה הזו ומאפשרת לך להפחית את ההפקדות, מבלי לפגוע ביעד הסופי, ובכך לשחרר לך תזרים מזומנים.</p></div>
+                    <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-cyan-400 mb-3">تأثير الفائدة المركبة</h3><p class="leading-relaxed">الأرباح التي يحققها استثمارك تضاف إلى المبلغ الأصلي (رأس المال). وفي العام التالي، تجني عائداً على كل من رأس المال والأرباح المتراكمة. مع مرور الوقت، يتحول تأثير "الفائدة على الفائدة" من قوة صغيرة إلى محرك نمو هائل.</p></div>
+                    <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-purple-400 mb-3">أهمية الأفق الزمني للاستثمار</h3><p class="leading-relaxed">العامل الأكثر أهمية في الاستثمار هو الوقت. كلما بدأت الاستثمار مبكراً، منحت أموالك وقتاً أطول للنمو. <strong class="text-white">مثال:</strong> ادخار 2000 AED شهرياً من سن 24 سيحقق مبلغاً أعلى بكثير من ادخار نفس المبلغ بدءاً من سن 34.</p></div>
+                    <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-orange-400 mb-3">استراتيجية السحب</h3><p class="leading-relaxed">عند التقاعد، يمكنك سحب معاش يستهلك رأس المال بمرور الوقت، أو "العيش على العائد" - وهو سحب مستدام يحافظ على رأس المال ويسمح له بمواصلة النمو. لكل استراتيجية مزاياها وعيوبها من حيث قيمة المعاش الشهري والحفاظ على الثروة.</p></div>
+                    <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-green-400 mb-3">التحسين: الاستراتيجية الديناميكية</h3><p class="leading-relaxed">في البداية، تكون إيداعاتك هي محرك النمو الرئيسي. مع مرور الوقت، تصبح الفائدة المركبة هي المحرك الأقوى. تحدد الاستراتيجية الديناميكية نقطة التحول هذه، مما يسمح لك بتقليل الإيداعات دون المساس بهدفك النهائي، وبالتالي تحرير سيولة نقدية لك.</p></div>
                 </div>
             </section>
-
             <footer class="mt-12">
                 <div class="ad-banner animate-slide-up" style="animation-delay: 0.7s;">
-                    <ins class="adsbygoogle"
-                         style="display:block"
-                         data-ad-client="ca-pub-6032822392451748"
-                         data-ad-slot="3564562601"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                    <script>
-                         (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
+                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6032822392451748" data-ad-slot="3564562601" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
                 </div>
-                <p class="text-center text-slate-400 mt-8 mb-4">
-                    פותח ע״י סלים חניפס © 2025. כל הזכויות שמורות.
-                </p>
+                <p class="text-center text-slate-400 mt-8 mb-4">تم التطوير بواسطة سليم حنيפס © 2025. جميع الحقوق محفوظة.</p>
             </footer>
         </div>
-
         <aside class="hidden lg:flex justify-center pt-32">
             <div class="sidebar-ad sticky top-8">
-                 <ins class="adsbygoogle"
-                     style="display:inline-block;width:160px;height:600px"
-                     data-ad-client="ca-pub-6032822392451748"
-                     data-ad-slot="6461138934"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+                 <ins class="adsbygoogle" style="display:inline-block;width:160px;height:600px" data-ad-client="ca-pub-6032822392451748" data-ad-slot="6461138934"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
         </aside>
 
     </div>
 
     <script>
-        // DOM Elements - Removed Popup elements
+        // DOM Elements
         const DOMElements = {
             tabForward: document.getElementById('tabForward'),
             tabReverse: document.getElementById('tabReverse'),
@@ -432,11 +285,11 @@
             revGoalTypeRadios: document.querySelectorAll('input[name="revGoalType"]')
         };
 
-        // ... (The rest of the JavaScript remains unchanged)
         let savingsChart, pensionChart;
-        const currencyFormatter = new Intl.NumberFormat('he-IL', { 
+        const currencyFormatter = new Intl.NumberFormat('ar-AE', { 
             style: 'currency', 
-            currency: 'ILS', 
+            currency: 'AED', 
+            currencyDisplay: 'code',
             minimumFractionDigits: 0, 
             maximumFractionDigits: 0 
         });
@@ -515,14 +368,14 @@
             DOMElements.fullTotalInterest.textContent = currencyFormatter.format(fullResult.fv - fullResult.totalDeposits);
             DOMElements.useFullDepositButton.classList.remove('hidden');
             DOMElements.useFullDepositButton.dataset.amount = Math.round(fullDepositFV);
-            DOMElements.realValueFull.textContent = useInflation ? `ערך ריאלי: ${currencyFormatter.format(fullDepositFV / Math.pow(1 + inflationRate, t))}` : '';
+            DOMElements.realValueFull.textContent = useInflation ? `القيمة الحقيقية: ${currencyFormatter.format(fullDepositFV / Math.pow(1 + inflationRate, t))}` : '';
             if (M === 0 || r_annual === 0) {
                 DOMElements.futureValue.textContent = currencyFormatter.format(fullDepositFV);
                 DOMElements.totalDeposits.textContent = currencyFormatter.format(fullResult.totalDeposits);
                 DOMElements.totalInterest.textContent = currencyFormatter.format(fullResult.fv - fullResult.totalDeposits);
-                DOMElements.strategyResult.innerHTML = `<div class="text-slate-400">נדרשת הפקדה חודשית ותשואה כדי לחשב אסטרטגיה.</div>`;
+                DOMElements.strategyResult.innerHTML = `<div class="text-slate-400">يلزم وجود إيداع شهري وعائد لحساب الاستراتيجية.</div>`;
                 DOMElements.useStrategyButton.classList.add('hidden');
-                DOMElements.realValueStrategy.textContent = useInflation ? `ערך ריאלי: ${currencyFormatter.format(fullDepositFV / Math.pow(1 + inflationRate, t))}` : '';
+                DOMElements.realValueStrategy.textContent = useInflation ? `القيمة الحقيقية: ${currencyFormatter.format(fullDepositFV / Math.pow(1 + inflationRate, t))}` : '';
                 updateSavingsChart(P, M, r_annual / 12, t);
             } else {
                 const sim = runSavingsSimulation(P, M, r_annual, t, currentAge);
@@ -534,7 +387,7 @@
                 updateStrategyCard(sim.milestones, M, DOMElements.strategyResult);
                 DOMElements.useStrategyButton.classList.remove('hidden');
                 DOMElements.useStrategyButton.dataset.amount = Math.round(strategyFV);
-                DOMElements.realValueStrategy.textContent = useInflation ? `ערך ריאלי: ${currencyFormatter.format(strategyFV / Math.pow(1 + inflationRate, t))}` : '';
+                DOMElements.realValueStrategy.textContent = useInflation ? `القيمة الحقيقية: ${currencyFormatter.format(strategyFV / Math.pow(1 + inflationRate, t))}` : '';
                 updateSavingsChart(P, M, r_annual / 12, t, sim.chartData);
             }
             calculatePension();
@@ -561,9 +414,9 @@
             }
             const savingYears = pensionStartAge - currentAge;
             if (savingYears <= 0 || r_annual === 0) {
-                DOMElements.revRequiredDeposit.textContent = "שגיאה";
-                DOMElements.revRequiredCapital.textContent = "בדוק נתונים";
-                DOMElements.revStrategyResult.innerHTML = `<div class="text-red-400">לא ניתן לחשב. ודא שגיל הפרישה גבוה מהגיל הנוכחי ושהתשואה חיובית.</div>`;
+                DOMElements.revRequiredDeposit.textContent = "خطأ";
+                DOMElements.revRequiredCapital.textContent = "تحقق من المدخلات";
+                DOMElements.revStrategyResult.innerHTML = `<div class="text-red-400">لا يمكن الحساب. تأكد من أن سن التقاعد أكبر من العمر الحالي وأن العائد إيجابي.</div>`;
                 return;
             }
             let requiredCapitalNet = 0;
@@ -580,9 +433,9 @@
                 const growthTarget = 0.02;
                 const r_real = useInflation ? (1 + r_annual) / (1 + inflationRate) - 1 : r_annual;
                 if (r_real <= growthTarget) {
-                    DOMElements.revRequiredDeposit.textContent = "בלתי אפשרי";
-                    DOMElements.revRequiredCapital.textContent = "התשואה הריאלית חייבת להיות גבוהה מ-2%";
-                    DOMElements.revStrategyResult.innerHTML = `<div class="text-red-400">לא ניתן להשיג צמיחה ריאלית של 2% עם התשואה והאינפלציה הנתונות.</div>`;
+                    DOMElements.revRequiredDeposit.textContent = "مستحيل";
+                    DOMElements.revRequiredCapital.textContent = "يجب أن يكون العائد الحقيقي > 2%";
+                    DOMElements.revStrategyResult.innerHTML = `<div class="text-red-400">لا يمكن تحقيق نمو حقيقي بنسبة 2% مع العائد والتضخم المحددين.</div>`;
                     return;
                 }
                 requiredCapitalNet = (desiredIncome * 12) / (r_real - growthTarget);
@@ -611,20 +464,20 @@
         function updateStrategyCard(milestones, M_initial, element) {
             let html = '';
             if (milestones.reduceTo40) {
-                html += `<div class="mb-2"><strong>שלב 1 - גיל ${milestones.reduceTo40.age}:</strong><br>
-                         התשואה השנתית (<span class="text-green-400">${currencyFormatter.format(milestones.reduceTo40.interest)}</span>) 
-                         עוקפת את ההפקדה השנתית המקורית.<br>
-                         <span class="text-slate-400">מומלץ להוריד הפקדה ל-${currencyFormatter.format(M_initial * 0.4)}/חודש (40%).</span></div>`;
+                html += `<div class="mb-2"><strong>المحطة 1 - عمر ${milestones.reduceTo40.age}:</strong><br>
+                         العائد السنوي (<span class="text-green-400">${currencyFormatter.format(milestones.reduceTo40.interest)}</span>) 
+                         يتجاوز الإيداع السنوي الأصلي.<br>
+                         <span class="text-slate-400">التوصية: خفض الإيداع إلى ${currencyFormatter.format(M_initial * 0.4)}/شهرياً (40%).</span></div>`;
             } else {
-                html += `<div class="mb-2 text-slate-400">שלב 1 (הורדה ל-40%) לא הושג בתקופת החיסכון.</div>`;
+                html += `<div class="mb-2 text-slate-400">المحطة 1 (الخفض إلى 40%) لم يتم الوصول إليها خلال فترة الادخار.</div>`;
             }
             if (milestones.reduceTo0) {
-                html += `<div><strong>שלב 2 - גיל ${milestones.reduceTo0.age}:</strong><br>
-                         התשואה השנתית (<span class="text-green-400">${currencyFormatter.format(milestones.reduceTo0.interest)}</span>) 
-                         כפולה מההפקדה השנתית המקורית.<br>
-                         <span class="text-slate-400">מומלץ להפסיק הפקדות לחלוטין - התשואה תעשה את העבודה!</span></div>`;
+                html += `<div><strong>المحطة 2 - عمر ${milestones.reduceTo0.age}:</strong><br>
+                         العائد السنوي (<span class="text-green-400">${currencyFormatter.format(milestones.reduceTo0.interest)}</span>) 
+                         يساوي ضعف الإيداع السنوي الأصلي.<br>
+                         <span class="text-slate-400">التوصية: أوقف الإيداعات تماماً - العائد سيقوم بالعمل!</span></div>`;
             } else {
-                html += `<div class="text-slate-400">שלב 2 (הפסקה מלאה) לא הושג בתקופת החיסכון.</div>`;
+                html += `<div class="text-slate-400">المحطة 2 (التوقف الكامل) لم يتم الوصول إليها خلال فترة الادخار.</div>`;
             }
             element.innerHTML = html;
         }
@@ -655,18 +508,18 @@
             savingsChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: years.map(y => `שנה ${y}`),
+                    labels: years.map(y => `السنة ${y}`),
                     datasets: [
-                        { label: 'תשואה', data: data.interest, backgroundColor: '#22c55e', borderColor: '#16a34a', borderWidth: 1 },
-                        { label: 'הפקדות', data: data.deposits, backgroundColor: '#3b82f6', borderColor: '#2563eb', borderWidth: 1 },
-                        { label: 'קרן ראשונית', data: data.principal, backgroundColor: '#64748b', borderColor: '#475569', borderWidth: 1 }
+                        { label: 'العائد', data: data.interest, backgroundColor: '#22c55e', borderColor: '#16a34a', borderWidth: 1 },
+                        { label: 'الإيداعات', data: data.deposits, backgroundColor: '#3b82f6', borderColor: '#2563eb', borderWidth: 1 },
+                        { label: 'رأس المال المبدئي', data: data.principal, backgroundColor: '#64748b', borderColor: '#475569', borderWidth: 1 }
                     ]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: {
-                        title: { display: true, text: 'התפתחות החיסכון לאורך זמן', color: '#f1f5f9', font: { size: 16 } },
-                        tooltip: { mode: 'index', intersect: false, callbacks: { footer: (tooltipItems) => `סה"כ: ${currencyFormatter.format(tooltipItems.reduce((sum, item) => sum + item.raw, 0))}` } },
+                        title: { display: true, text: 'نمو المدخرات بمرور الوقت', color: '#f1f5f9', font: { size: 16 } },
+                        tooltip: { mode: 'index', intersect: false, callbacks: { footer: (tooltipItems) => `الإجمالي: ${currencyFormatter.format(tooltipItems.reduce((sum, item) => sum + item.raw, 0))}` } },
                         legend: { labels: { color: '#94a3b8' } }
                     },
                     scales: { x: { stacked: true, ticks: { color: '#94a3b8' } }, y: { stacked: true, ticks: { color: '#94a3b8', callback: value => currencyFormatter.format(value) } } }
@@ -717,16 +570,16 @@
             pensionChart = new Chart(context, {
                 type: 'line',
                 data: {
-                    labels: years.map(y => `שנה ${y}`),
+                    labels: years.map(y => `السنة ${y}`),
                     datasets: [
-                        { label: 'יתרה במשיכת קצבה', data: balanceDepletion, borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.2)', fill: true, tension: 0.2 },
-                        { label: 'יתרה במשיכה עם צמיחה', data: balanceGrowth, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.2)', fill: true, tension: 0.2 }
+                        { label: 'الرصيد مع سحب المعاش', data: balanceDepletion, borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.2)', fill: true, tension: 0.2 },
+                        { label: 'الرصيد مع سحب يضمن النمو', data: balanceGrowth, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.2)', fill: true, tension: 0.2 }
                     ]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: {
-                        title: { display: true, text: 'התפתחות הקרן בתרחישי משיכה', color: '#f1f5f9', font: { size: 16 } },
+                        title: { display: true, text: 'تطور رأس المال في سيناريوهات السحب', color: '#f1f5f9', font: { size: 16 } },
                         legend: { display: true, position: 'top', labels: { color: '#94a3b8' } }
                     },
                     scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8', callback: value => currencyFormatter.format(value) } } }
@@ -765,13 +618,33 @@
             if (DOMElements.useStrategyButton) DOMElements.useStrategyButton.addEventListener('click', (e) => { DOMElements.totalSavings.value = e.currentTarget.dataset.amount; calculatePension(); });
             if (DOMElements.useFullDepositButton) DOMElements.useFullDepositButton.addEventListener('click', (e) => { DOMElements.totalSavings.value = e.currentTarget.dataset.amount; calculatePension(); });
             if (DOMElements.tabForward) DOMElements.tabForward.addEventListener('click', () => {
-                DOMElements.tabForward.classList.add('active'); DOMElements.tabReverse.classList.remove('active');
-                DOMElements.forwardCalculator.classList.remove('hidden'); DOMElements.reverseCalculator.classList.add('hidden');
+                DOMElements.tabForward.classList.add('active');
+                DOMElements.tabReverse.classList.remove('active');
+                DOMElements.forwardCalculator.classList.remove('hidden');
+                DOMElements.reverseCalculator.classList.add('hidden');
             });
             if (DOMElements.tabReverse) DOMElements.tabReverse.addEventListener('click', () => {
-                DOMElements.tabReverse.classList.add('active'); DOMElements.tabForward.classList.remove('active');
-                DOMElements.reverseCalculator.classList.remove('hidden'); DOMElements.forwardCalculator.classList.add('hidden');
+                DOMElements.tabReverse.classList.add('active');
+                DOMElements.tabForward.classList.remove('active');
+                DOMElements.reverseCalculator.classList.remove('hidden');
+                DOMElements.forwardCalculator.classList.add('hidden');
                 handleReverseCalculations();
+            });
+
+            const langWrapper = document.getElementById('lang-switcher-wrapper');
+            const langButton = document.getElementById('lang-dropdown-button');
+            const langDropdown = document.getElementById('lang-dropdown');
+
+            document.addEventListener('click', (event) => {
+                if (langWrapper && langWrapper.contains(event.target)) {
+                    if (langButton && langButton.contains(event.target)) {
+                        langDropdown.classList.toggle('hidden');
+                    }
+                } else {
+                    if (langDropdown && !langDropdown.classList.contains('hidden')) {
+                        langDropdown.classList.add('hidden');
+                    }
+                }
             });
         }
 
@@ -804,8 +677,6 @@
             });
         }
         
-        // The popup function is no longer needed and has been removed.
-
         document.addEventListener('DOMContentLoaded', function() {
             setupEventListeners();
             setupRadioButtons();
