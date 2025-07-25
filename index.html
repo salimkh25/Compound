@@ -149,6 +149,35 @@
             transform: translate(-50%, -50%) scale(0); 
             transition: transform 0.3s ease; 
         }
+        .info-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #475569;
+            color: #e2e8f0;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 18px;
+            cursor: help;
+            margin-right: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .info-icon:hover {
+            background-color: #64748b;
+        }
+        .ad-banner {
+            background-color: rgba(30, 41, 59, 0.3);
+            border: 2px dashed #475569;
+            color: #64748b;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            margin: 2.5rem 0;
+            border-radius: 1rem;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body class="text-slate-100">
@@ -158,20 +187,20 @@
                 מחשבון חיסכון וקצבה מתקדם
             </h1>
             <p class="text-lg text-slate-300 max-w-2xl mx-auto">
-                גלה את כוחה של ריבית דריבית ותכנן את עתידך הפיננסי בצורה חכמה ומדויקת
+                גלה את אפקט הריבית דריבית ותכנן את עתידך הפיננסי באופן מדויק ואסטרטגי.
             </p>
         </header>
 
         <div class="flex gap-2 mb-8 justify-center animate-slide-up" style="animation-delay: 0.2s;">
-            <button id="tabForward" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300 active">מחשבון עתידי</button>
-            <button id="tabReverse" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300">מחשבון יעד</button>
+            <button id="tabForward" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300 active">תחזית חיסכון</button>
+            <button id="tabReverse" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300">תכנון יעד</button>
         </div>
 
         <div id="forwardCalculator" class="calculator-content animate-slide-up" style="animation-delay: 0.4s;">
             <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="space-y-8">
                     <div class="glass-card p-6 md:p-8 rounded-2xl">
-                        <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text border-b border-blue-400/20 pb-3">שלב 1: תכנון החיסכון</h2>
+                        <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text border-b border-blue-400/20 pb-3">שלב 1: פרמטרים לחיסכון</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="input-group">
                                 <label for="initialAmount" class="block text-sm font-medium text-slate-300 mb-2">סכום התחלתי (₪)</label>
@@ -182,7 +211,7 @@
                                 <input type="number" id="monthlyDeposit" value="500" min="0" class="w-full p-3 rounded-lg input-modern text-white">
                             </div>
                             <div class="input-group">
-                                <label for="annualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">ריבית שנתية (%)  </label>
+                                <label for="annualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">תשואה שנתית צפויה (%)</label>
                                 <input type="number" id="annualInterestRate" value="7" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white">
                             </div>
                             <div class="input-group">
@@ -213,53 +242,49 @@
                                     <div class="switch-modern" data-for="includeTax">
                                         <div class="switch-handle"></div>
                                     </div>
-                                    <span>התחשב במס</span>
+                                    <span>התחשב במס רווחי הון</span>
                                     <input type="checkbox" id="includeTax" class="hidden">
                                 </label>
                                 <input type="number" id="taxRate" value="25" min="0" max="100" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled>
-                                <label class="text-xs text-slate-400 mt-1">אחוז מס על רווחים</label>
+                                <label class="text-xs text-slate-400 mt-1">אחוז מס על רווחים ריאליים</label>
                             </div>
                         </div>
 
                         <div class="space-y-4 mt-8">
                             <div class="result-card glass-card p-4 rounded-xl">
-                                <div class="flex justify-between items-start">
-                                    <h3 class="text-slate-400 text-sm font-medium">תחזית (אסטרטגיה חכמה)</h3>
-                                    <button id="useStrategyButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button>
-                                </div>
+                                <h3 class="text-slate-400 text-sm font-medium">תחזית (אסטרטגיה דינמית)</h3>
+                                <button id="useStrategyButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button>
                                 <p id="futureValue" class="text-white text-3xl font-bold -mt-1">₪0</p>
                                 <div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2">
                                     <div>
-                                        <span class="block">הפקדות</span>
+                                        <span class="block">סה"כ הפקדות</span>
                                         <span id="totalDeposits" class="font-semibold text-slate-300">₪0</span>
                                     </div>
                                     <div>
-                                        <span class="block">ריבית</span>
+                                        <span class="block">סה"כ תשואה</span>
                                         <span id="totalInterest" class="font-semibold text-green-400">₪0</span>
                                     </div>
                                 </div>
                                 <div id="realValueStrategy" class="text-xs text-cyan-300 mt-2"></div>
                             </div>
                             <div class="result-card glass-card p-4 rounded-xl">
-                                <div class="flex justify-between items-start">
-                                    <h3 class="text-slate-400 text-sm font-medium">תחזית (הפקדה מלאה)</h3>
-                                    <button id="useFullDepositButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button>
-                                </div>
+                                <h3 class="text-slate-400 text-sm font-medium">תחזית (הפקדה רציפה)</h3>
+                                <button id="useFullDepositButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button>
                                 <p id="fullDepositResult" class="text-white text-xl font-bold -mt-1">₪0</p>
                                 <div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2">
                                     <div>
-                                        <span class="block">הפקדות</span>
+                                        <span class="block">סה"כ הפקדות</span>
                                         <span id="fullTotalDeposits" class="font-semibold text-slate-300">₪0</span>
                                     </div>
                                     <div>
-                                        <span class="block">ריבית</span>
+                                        <span class="block">סה"כ תשואה</span>
                                         <span id="fullTotalInterest" class="font-semibold text-green-400">₪0</span>
                                     </div>
                                 </div>
                                 <div id="realValueFull" class="text-xs text-cyan-300 mt-2"></div>
                             </div>
                             <div id="strategyCard" class="result-card glass-card p-4 rounded-xl bg-indigo-900/10 border-indigo-500/30">
-                                <h3 class="text-indigo-300 text-sm font-medium">אסטרטגיית הפקדה חכמה</h3>
+                                <h3 class="text-indigo-300 text-sm font-medium">אבני דרך באסטרטגיה הדינמית</h3>
                                 <div id="strategyResult" class="text-white text-sm space-y-2 mt-2"></div>
                             </div>
                         </div>
@@ -270,13 +295,13 @@
                 </div>
                 <div class="space-y-8">
                     <div class="glass-card p-6 md:p-8 rounded-2xl">
-                        <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text border-b border-amber-400/20 pb-3">שלב 2: מחשבון קצבה</h2>
+                        <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text border-b border-amber-400/20 pb-3">שלב 2: תכנון קצבה</h2>
                         <div class="input-group mb-4">
-                            <label for="totalSavings" class="block text-sm font-medium text-slate-300 mb-2">הסכום שנצבר (₪)</label>
+                            <label for="totalSavings" class="block text-sm font-medium text-slate-300 mb-2">סכום ההון שנצבר (₪)</label>
                             <input type="number" id="totalSavings" min="0" class="w-full p-3 rounded-lg input-modern text-white">
                         </div>
                         <div class="input-group mb-4">
-                            <label for="pensionInterestRate" class="block text-sm font-medium text-slate-300 mb-2">ריבית שנתית על הצבירה (%)</label>
+                            <label for="pensionInterestRate" class="block text-sm font-medium text-slate-300 mb-2">תשואה שנתית על הצבירה (%)</label>
                             <input type="number" id="pensionInterestRate" value="5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white">
                         </div>
                         <div class="input-group mb-4">
@@ -285,15 +310,18 @@
                         </div>
                         <div class="space-y-3 mt-6">
                             <div class="result-card glass-card p-3 rounded-lg">
-                                <h3 class="text-slate-400 text-xs">קצבה חודשית (לגמר הקרן)</h3>
+                                <h3 class="text-slate-400 text-xs">קצבה חודשית (למיצוי הקרן)</h3>
                                 <p id="monthlyPension" class="text-amber-400 text-2xl font-bold">₪0</p>
                             </div>
                             <div class="result-card glass-card p-3 rounded-lg">
-                                <h3 class="text-slate-400 text-xs">משיכה בת-קיימא</h3>
+                                <h3 class="text-slate-400 text-xs flex items-center">
+                                    <span class="info-icon" title="משיכה מרווחי ההון בלבד (התשואה), מבלי לפגוע בסכום הקרן המקורי. מבטיח שההון לא יתכלה עם הזמן.">ⓘ</span>
+                                    משיכה בת-קיימא
+                                </h3>
                                 <p id="sustainableWithdrawal" class="text-green-400 text-2xl font-bold">₪0</p>
                             </div>
                             <div class="result-card glass-card p-3 rounded-lg">
-                                <h3 class="text-slate-400 text-xs">משיכה מומלצת (צמיחה 2%)</h3>
+                                <h3 class="text-slate-400 text-xs">משיכה עם צמיחה ריאלית (2%)</h3>
                                 <p id="growingWithdrawal" class="text-sky-400 text-2xl font-bold">₪0</p>
                             </div>
                         </div>
@@ -326,7 +354,7 @@
                                 <label class="radio-label text-slate-300">
                                     <input type="radio" name="revGoalType" value="growingPension" class="hidden">
                                     <div class="radio-indicator"></div>
-                                    <span>משיכה מומלצת</span>
+                                    <span>משיכה עם צמיחה</span>
                                 </label>
                             </div>
                         </div>
@@ -351,7 +379,7 @@
                         <h3 class="text-lg font-semibold text-slate-300 mt-8 mb-4">הנחות יסוד</h3>
                         <div class="grid grid-cols-1 gap-4">
                             <div class="input-group">
-                                <label for="revAnnualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">ריבית שנתית צפויה (%)</label>
+                                <label for="revAnnualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">תשואה שנתית צפויה (%)</label>
                                 <input type="number" id="revAnnualInterestRate" value="7" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white">
                             </div>
                             <div class="input-group">
@@ -369,7 +397,7 @@
                                     <div class="switch-modern" data-for="revIncludeTax">
                                         <div class="switch-handle"></div>
                                     </div>
-                                    <span>התחשב במס</span>
+                                    <span>התחשב במס רווחי הון</span>
                                     <input type="checkbox" id="revIncludeTax" class="hidden">
                                 </label>
                                 <input type="number" id="revTaxRate" value="25" min="0" max="100" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled>
@@ -397,23 +425,37 @@
             </main>
         </div>
 
+        <div class="ad-banner animate-slide-up" style="animation-delay: 0.5s;">
+            -- שטח פרסום --
+        </div>
+
         <section class="mt-12 glass-card p-8 rounded-2xl animate-slide-up" style="animation-delay: 0.6s;">
             <h2 class="text-3xl font-bold text-center mb-8 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">המדריך להשקעה חכמה</h2>
-            <div class="grid md:grid-cols-3 gap-8 text-slate-300">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-slate-300">
                 <div class="p-4 rounded-lg hover:bg-white/5 transition-colors">
-                    <h3 class="text-xl font-semibold text-cyan-400 mb-3">כוחה של ריבית דריבית</h3>
-                    <p class="leading-relaxed">דמיין כדור שלג קטן שמתחיל להתגלגל מראש הר מושלג. בהתחלה הוא קטן, אבל ככל שהוא מתגלגל, הוא אוסף עוד ועוד שלג וגדל בקצב מהיר יותר ויותר. זו בדיוק ריבית דריבית: הרווחים שלך מצטרפים לקרן, ובשנה הבאה אתה מרוויח "ריבית על הריבית". לאורך זמן, האפקט הזה הופך מכוח קטן למנוע צמיחה אדיר.</p>
+                    <h3 class="text-xl font-semibold text-cyan-400 mb-3">אפקט הריבית דריבית</h3>
+                    <p class="leading-relaxed">הרווחים שההשקעה שלך מניבה מצטרפים לסכום המקורי (הקרן), ובשנה הבאה, אתה מרוויח תשואה גם על הקרן וגם על הרווחים שנצברו. לאורך זמן, אפקט ה"ריבית על ריבית" הזה הופך מכוח קטן למנוע צמיחה אקספוננציאלי.</p>
                 </div>
                 <div class="p-4 rounded-lg hover:bg-white/5 transition-colors">
-                    <h3 class="text-xl font-semibold text-purple-400 mb-3">הנשק הסודי: זמן</h3>
-                    <p class="leading-relaxed">המרכיב החשוב ביותר בכדור השלג הוא אורך המדרון. ככל שתתחיל מוקדם יותר, כך תיתן לכסף שלך יותר זמן לצמוח. <strong class="text-white">דוגמה:</strong> אם תחסוך 500 ₪ לחודש מגיל 24 עד 64 (40 שנה), תצבור (לפי האסטרטגיה החכמה) כ-1.5 מיליון ₪. אם תתחיל רק 10 שנים מאוחר יותר, בגיל 34, ותחסוך 30 שנה, תצבור רק כ-700 אלף ₪. העשור הראשון הזה שווה לך יותר מכל שאר החיסכון!</p>
+                    <h3 class="text-xl font-semibold text-purple-400 mb-3">חשיבותו של טווח ההשקעה</h3>
+                    <p class="leading-relaxed">הגורם המשמעותי ביותר בהשקעה הוא זמן. ככל שתתחיל להשקיע מוקדם יותר, כך תעניק לכספך אופק זמן ארוך יותר לצמוח. <strong class="text-white">דוגמה:</strong> חיסכון של 500 ₪ לחודש מגיל 24 יניב סכום גבוה משמעותית מחיסכון של סכום זהה שמתחיל בגיל 34, גם אם סך ההפקדות נמוך יותר.</p>
                 </div>
                 <div class="p-4 rounded-lg hover:bg-white/5 transition-colors">
-                    <h3 class="text-xl font-semibold text-green-400 mb-3">אסטרטגיית משיכה</h3>
-                    <p class="leading-relaxed">בפרישה, יש לך שתי אפשרויות: "לאכול את העוגה" (קצבה רגילה) או "לחיות מהקצפת" (משיכה בת-קיימא). האפשרות הראשונה תיתן לך סכום חודשי גבוה יותר, אך תרוקן את החיסכון. השנייה תאפשר לך לחיות מהרווחים בלבד, מבלי לגעת בקרן, מה שמבטיח שהכסף שלך לעולם לא ייגמר וימשיך לצמוח עבורך ועבור הדורות הבאים.</p>
+                    <h3 class="text-xl font-semibold text-orange-400 mb-3">אסטרטגיית המשיכה</h3>
+                    <p class="leading-relaxed">בפרישה, ניתן למשוך קצבה שתכלה את הקרן לאורך זמן, או "לחיות מהתשואה" - משיכה בת-קיימא שמשמרת את הקרן ומאפשרת לה להמשיך לצמוח. לכל אסטרטגיה יתרונות וחסרונות מבחינת גובה הקצבה החודשית ושימור ההון.</p>
+                </div>
+                <div class="p-4 rounded-lg hover:bg-white/5 transition-colors">
+                    <h3 class="text-xl font-semibold text-green-400 mb-3">אופטימיזציה: אסטרטגיה דינמית</h3>
+                    <p class="leading-relaxed">בתחילת הדרך, ההפקדות שלך הן מנוע הצמיחה העיקרי. עם הזמן, הריבית דריבית הופכת למנוע החזק יותר. אסטרטגיה דינמית מזהה את נקודת המפנה הזו ומאפשרת לך להפחית את ההפקדות, מבלי לפגוע ביעד הסופי, ובכך לשחרר לך תזרים מזומנים.</p>
                 </div>
             </div>
         </section>
+
+        <footer class="mt-12">
+            <div class="ad-banner animate-slide-up" style="animation-delay: 0.7s;">
+                -- שטח פרסום תחתון --
+            </div>
+        </footer>
     </div>
 
     <script>
@@ -620,7 +662,7 @@
                 DOMElements.futureValue.textContent = currencyFormatter.format(fullDepositFV);
                 DOMElements.totalDeposits.textContent = currencyFormatter.format(fullResult.totalDeposits);
                 DOMElements.totalInterest.textContent = currencyFormatter.format(fullResult.fv - fullResult.totalDeposits);
-                DOMElements.strategyResult.innerHTML = `<div class="text-slate-400">נדרשת הפקדה חודשית וריבית כדי לחשב אסטרטגיה.</div>`;
+                DOMElements.strategyResult.innerHTML = `<div class="text-slate-400">נדרשת הפקדה חודשית ותשואה כדי לחשב אסטרטגיה.</div>`;
                 DOMElements.useStrategyButton.classList.add('hidden');
                 DOMElements.realValueStrategy.textContent = useInflation ? 
                     `ערך ריאלי: ${currencyFormatter.format(fullDepositFV / Math.pow(1 + inflationRate, t))}` : '';
@@ -680,7 +722,7 @@
             if (savingYears <= 0 || r_annual === 0) {
                 DOMElements.revRequiredDeposit.textContent = "שגיאה";
                 DOMElements.revRequiredCapital.textContent = "בדוק נתונים";
-                DOMElements.revStrategyResult.innerHTML = `<div class="text-red-400">לא ניתן לחשב. ודא שגיל הפרישה גבוה מהגיל הנוכחי ושהריבית חיובית.</div>`;
+                DOMElements.revStrategyResult.innerHTML = `<div class="text-red-400">לא ניתן לחשב. ודא שגיל הפרישה גבוה מהגיל הנוכחי ושהתשואה חיובית.</div>`;
                 return;
             }
 
@@ -703,8 +745,8 @@
                 
                 if (r_real <= growthTarget) {
                     DOMElements.revRequiredDeposit.textContent = "בלתי אפשרי";
-                    DOMElements.revRequiredCapital.textContent = "הריבית הריאלית חייבת להיות גבוהה מ-2%";
-                    DOMElements.revStrategyResult.innerHTML = `<div class="text-red-400">לא ניתן להשיג צמיחה ריאלית של 2% עם הריבית והאינפלציה הנתונות.</div>`;
+                    DOMElements.revRequiredCapital.textContent = "התשואה הריאלית חייבת להיות גבוהה מ-2%";
+                    DOMElements.revStrategyResult.innerHTML = `<div class="text-red-400">לא ניתן להשיג צמיחה ריאלית של 2% עם התשואה והאינפלציה הנתונות.</div>`;
                     return;
                 }
                 
@@ -760,7 +802,7 @@
             
             if (milestones.reduceTo40) {
                 html += `<div class="mb-2">🎯 <strong>שלב 1 - גיל ${milestones.reduceTo40.age}:</strong><br>
-                         הריבית השנתית (<span class="text-green-400">${currencyFormatter.format(milestones.reduceTo40.interest)}</span>) 
+                         התשואה השנתית (<span class="text-green-400">${currencyFormatter.format(milestones.reduceTo40.interest)}</span>) 
                          עוקפת את ההפקדה השנתית המקורית.<br>
                          <span class="text-slate-400">מומלץ להוריד הפקדה ל-${currencyFormatter.format(M_initial * 0.4)}/חודש (40%).</span></div>`;
             } else {
@@ -769,9 +811,9 @@
             
             if (milestones.reduceTo0) {
                 html += `<div>🚀 <strong>שלב 2 - גיל ${milestones.reduceTo0.age}:</strong><br>
-                         הריבית השנתית (<span class="text-green-400">${currencyFormatter.format(milestones.reduceTo0.interest)}</span>) 
+                         התשואה השנתית (<span class="text-green-400">${currencyFormatter.format(milestones.reduceTo0.interest)}</span>) 
                          כפולה מההפקדה השנתית המקורית.<br>
-                         <span class="text-slate-400">מומלץ להפסיק הפקדות לחלוטין - הריבית תעשה את העבודה!</span></div>`;
+                         <span class="text-slate-400">מומלץ להפסיק הפקדות לחלוטין - התשואה תעשה את העבודה!</span></div>`;
             } else {
                 html += `<div class="text-slate-400">שלב 2 (הפסקה מלאה) לא הושג בתקופת החיסכון.</div>`;
             }
@@ -811,7 +853,7 @@
                     labels: years.map(y => `שנה ${y}`),
                     datasets: [
                         {
-                            label: 'ריבית',
+                            label: 'תשואה',
                             data: data.interest,
                             backgroundColor: '#22c55e',
                             borderColor: '#16a34a',
@@ -839,7 +881,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: 'צמיחת החיסכון לאורך זמן',
+                            text: 'התפתחות החיסכון לאורך זמן',
                             color: '#f1f5f9',
                             font: { size: 16 }
                         },
@@ -946,7 +988,7 @@
                             tension: 0.2
                         },
                         {
-                            label: 'יתרה במשיכה מומלצת (צמיחה)',
+                            label: 'יתרה במשיכה עם צמיחה',
                             data: balanceGrowth,
                             borderColor: '#38bdf8',
                             backgroundColor: 'rgba(56, 189, 248, 0.2)',
