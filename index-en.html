@@ -103,6 +103,7 @@
         .switch-modern.active { background: var(--primary-gradient); }
         .switch-handle { width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: all 0.3s ease; }
         html[dir="ltr"] .switch-modern.active .switch-handle { left: 26px; }
+        html[dir="rtl"] .switch-handle { right: 2px; }
         html[dir="rtl"] .switch-modern.active .switch-handle { right: 26px; }
         .switch-label { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
         .chart-container { background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(10px); border-radius: 1rem; border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem; height: 400px; }
@@ -126,26 +127,26 @@
         <div class="max-w-7xl mx-auto flex justify-end">
             <div class="relative inline-block text-left" id="lang-switcher-wrapper">
                 <button type="button" class="lang-dropdown-button inline-flex items-center justify-center w-full rounded-md border border-slate-600 shadow-sm px-4 py-2 bg-slate-800 text-sm font-medium text-slate-200 hover:bg-slate-700 transition" id="lang-dropdown-button">
-                    <span id="current-lang-flag" class="mr-2 text-lg">🇺🇸</span>
+                    <span id="current-lang-flag" class="mr-2 text-lg">🇬🇧</span>
                     <span id="current-lang-text">English</span>
                     <svg class="ml-2 -mr-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                     </svg>
                 </button>
-                <div id="lang-dropdown" class="origin-top-right absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden" role="menu">
+                <div id="lang-dropdown" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden" role="menu">
                     <div class="py-1" role="none">
-                        <a href="index.html" onclick="setCookie('user_lang', 'he', 365)" class="lang-dropdown-item text-slate-200 font-semibold block px-4 py-2 text-sm text-center" role="menuitem">
+                        <a href="#" data-lang="he" data-page="index.html" class="lang-link lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
                            <span class="flex items-center justify-center text-lg">🇮🇱<span class="mx-2">עברית</span></span>
                         </a>
-                        <a href="index-en.html" onclick="setCookie('user_lang', 'en', 365)" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
+                        <a href="#" data-lang="en" data-page="index-en.html" class="lang-link lang-dropdown-item text-slate-200 font-semibold block px-4 py-2 text-sm text-center" role="menuitem">
                            <span class="flex items-center justify-center text-lg">🇬🇧<span class="mx-2">English</span></span>
                         </a>
-                        <a href="index-ar.html" onclick="setCookie('user_lang', 'ar', 365)" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
+                        <a href="#" data-lang="ar" data-page="index-ar.html" class="lang-link lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
                            <span class="flex items-center justify-center text-lg">🇦🇪<span class="mx-2">العربية</span></span>
                         </a>
                     </div>
                 </div>
-            </div>
+                </div>
         </div>
     </div>
 
@@ -244,7 +245,7 @@
                     <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-cyan-400 mb-3">The Compound Interest Effect</h3><p class="leading-relaxed">The returns your investment generates are added to the principal amount. The following year, you earn returns on both the principal and the accumulated gains. Over time, this "interest on interest" effect grows from a small force to an exponential growth engine.</p></div>
                     <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-purple-400 mb-3">The Importance of Time Horizon</h3><p class="leading-relaxed">The most significant factor in investing is time. The earlier you start investing, the longer your money has to grow. <strong class="text-white">Example:</strong> Saving $500 per month from age 24 will yield a significantly higher amount than saving the same sum starting at age 34, even if total deposits are lower.</p></div>
                     <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-orange-400 mb-3">Withdrawal Strategy</h3><p class="leading-relaxed">At retirement, you can withdraw a pension that depletes the principal over time, or "live off the returns"—a sustainable withdrawal that preserves the principal and allows it to keep growing. Each strategy has pros and cons regarding monthly income and capital preservation.</p></div>
-                    <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-green-400 mb-3">Optimization: Dynamic Strategy</h3><p class="leading-relaxed">Early on, your deposits are the main growth engine. Over time, compound interest becomes the more powerful engine. A dynamic strategy identifies this tipping point, allowing you to reduce deposits without compromising your final goal, thereby freeing up cash flow.</p></div>
+                    <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-green-400 mb-3">Optimization: Dynamic Strategy</h3><p class="leading-relaxed">Early on, your deposits are the main growth engine. Over time, compound interest becomes the more powerful engine. A dynamic strategy identifies this tipping point, allowing you to to reduce deposits without compromising your final goal, thereby freeing up cash flow.</p></div>
                 </div>
             </section>
             <footer class="mt-12">
@@ -634,25 +635,47 @@
             input.disabled = !checkbox.checked;
             switchEl.classList.toggle('active', checkbox.checked);
         }
-        // Cookie helper functions for language switcher
-function setCookie(name, value, days = 365) {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-    document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
-}
 
-function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
+        function setCookie(name, value, days = 365) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // === NEW JAVASCRIPT FUNCTION START ===
+        function handleLanguageChange(event) {
+            // Prevents the default link behavior
+            event.preventDefault(); 
+
+            // Finds the main link element, even if a child element was clicked
+            const link = event.target.closest('.lang-link');
+            if (!link) return;
+
+            const lang = link.dataset.lang;
+            const page = link.dataset.page;
+
+            if (lang && page) {
+                // 1. Set the cookie
+                setCookie('user_lang', lang, 365);
+                // 2. Navigate to the new page
+                window.location.href = page;
+            }
+        }
+        // === NEW JAVASCRIPT FUNCTION END ===
 
         function setupEventListeners() {
+            // Input listeners
             const forwardInputs = [ DOMElements.initialAmount, DOMElements.monthlyDeposit, DOMElements.annualInterestRate, DOMElements.currentAge, DOMElements.yearsOfSaving, DOMElements.inflationRate, DOMElements.taxRate ];
             forwardInputs.forEach(el => el && el.addEventListener('input', handleForwardCalculations));
             const pensionInputs = [ DOMElements.totalSavings, DOMElements.pensionInterestRate, DOMElements.yearsOfWithdrawal ];
@@ -660,12 +683,18 @@ function getCookie(name) {
             const reverseInputs = [ DOMElements.revDesiredIncome, DOMElements.revPensionStartAge, DOMElements.revCurrentAge, DOMElements.revInitialAmount, DOMElements.revAnnualInterestRate, DOMElements.revYearsOfWithdrawal, DOMElements.revInflationRate, DOMElements.revTaxRate ];
             reverseInputs.forEach(el => el && el.addEventListener('input', handleReverseCalculations));
             DOMElements.revGoalTypeRadios.forEach(radio => radio.addEventListener('change', handleReverseCalculations));
+            
+            // Toggle listeners
             if (DOMElements.includeInflation) setupToggle(DOMElements.includeInflation, DOMElements.inflationRate, DOMElements.inflationSwitch);
             if (DOMElements.includeTax) setupToggle(DOMElements.includeTax, DOMElements.taxRate, DOMElements.taxSwitch);
             if (DOMElements.revIncludeInflation) setupToggle(DOMElements.revIncludeInflation, DOMElements.revInflationRate, DOMElements.revInflationSwitch);
             if (DOMElements.revIncludeTax) setupToggle(DOMElements.revIncludeTax, DOMElements.revTaxRate, DOMElements.revTaxSwitch);
+            
+            // Button listeners
             if (DOMElements.useStrategyButton) DOMElements.useStrategyButton.addEventListener('click', (e) => { DOMElements.totalSavings.value = e.currentTarget.dataset.amount; calculatePension(); });
             if (DOMElements.useFullDepositButton) DOMElements.useFullDepositButton.addEventListener('click', (e) => { DOMElements.totalSavings.value = e.currentTarget.dataset.amount; calculatePension(); });
+            
+            // Tab listeners
             if (DOMElements.tabForward) DOMElements.tabForward.addEventListener('click', () => {
                 DOMElements.tabForward.classList.add('active');
                 DOMElements.tabReverse.classList.remove('active');
@@ -680,21 +709,30 @@ function getCookie(name) {
                 handleReverseCalculations();
             });
 
+            // Language Switcher Dropdown Toggle
             const langWrapper = document.getElementById('lang-switcher-wrapper');
             const langButton = document.getElementById('lang-dropdown-button');
             const langDropdown = document.getElementById('lang-dropdown');
 
+            if (langButton) {
+                langButton.addEventListener('click', () => {
+                    langDropdown.classList.toggle('hidden');
+                });
+            }
+
             document.addEventListener('click', (event) => {
-                if (langWrapper && langWrapper.contains(event.target)) {
-                    if (langButton && langButton.contains(event.target)) {
-                        langDropdown.classList.toggle('hidden');
-                    }
-                } else {
+                if (langWrapper && !langWrapper.contains(event.target)) {
                     if (langDropdown && !langDropdown.classList.contains('hidden')) {
                         langDropdown.classList.add('hidden');
                     }
                 }
             });
+
+            // === UPDATED EVENT LISTENER ATTACHMENT ===
+            document.querySelectorAll('.lang-link').forEach(link => {
+                link.addEventListener('click', handleLanguageChange);
+            });
+            // =========================================
         }
 
         function setupRadioButtons() {
