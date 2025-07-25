@@ -7,21 +7,35 @@
     
     <script>
         (function() {
+            // הגדרת שמות הקבצים לשפות השונות
             const he_page = 'index.html';
             const en_page = 'index-en.html';
             const ar_page = 'index-ar.html';
+
+            // שלב 1: בדוק אם קיימת העדפת שפה שמורה בדפדפן
             const savedLang = localStorage.getItem('user_lang');
             if (savedLang) {
                 const currentPage = window.location.pathname.split('/').pop();
-                if (savedLang === 'en' && currentPage !== en_page) window.location.replace(en_page);
-                else if (savedLang === 'ar' && currentPage !== ar_page) window.location.replace(ar_page);
-                else if (savedLang === 'he' && currentPage !== he_page) window.location.replace(he_page);
-                return;
+                
+                // בצע הפניה רק אם אנחנו לא כבר בעמוד הנכון
+                if (savedLang === 'en' && currentPage !== en_page) {
+                    window.location.replace(en_page);
+                } else if (savedLang === 'ar' && currentPage !== ar_page) {
+                    window.location.replace(ar_page);
+                } else if (savedLang === 'he' && currentPage !== he_page) {
+                    window.location.replace(he_page);
+                }
+                return; // אם טיפלנו בבחירה שמורה, סיים את הסקריפט כאן
             }
-            const userLang = navigator.language || navigator.userLanguage;
+
+            // שלב 2: אם אין בחירה שמורה, בצע זיהוי אוטומטי לפי שפת הדפדפן
+            const userLang = navigator.language || navigator.userLanguage; // "he-IL", "en-US", "ar-EG" etc.
+            
+            // אנחנו כבר בדף העברי, אז נבדוק רק אם צריך להפנות לשפות אחרות
             if (userLang.startsWith('ar')) {
                 window.location.replace(ar_page);
             } else if (!userLang.startsWith('he')) {
+                // אם השפה אינה עברית, הפנה לאנגלית כברירת מחדל
                 window.location.replace(en_page);
             }
         })();
@@ -50,7 +64,13 @@
                 radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.1), transparent 30%);
             background-attachment: fixed;
         }
-        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
         .input-modern { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
         .input-modern:focus { background: rgba(30, 41, 59, 0.9); border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
         .input-modern:disabled { background: rgba(15, 23, 42, 0.4); border-color: rgba(255, 255, 255, 0.05); color: #64748b; }
@@ -75,105 +95,210 @@
         .radio-indicator::after { content: ''; width: 10px; height: 10px; background: var(--primary-gradient); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); transition: transform 0.3s ease; }
         .info-icon { display: inline-block; width: 18px; height: 18px; border-radius: 50%; background-color: #475569; color: #e2e8f0; text-align: center; font-size: 12px; font-weight: bold; line-height: 18px; cursor: help; transition: background-color 0.3s ease; }
         .ad-banner { background-color: rgba(30, 41, 59, 0.3); margin: 2.5rem auto; border-radius: 1rem; width: 100%; max-width: 970px; min-height: 90px; display: flex; justify-content: center; align-items: center; overflow: hidden; color: #475569; }
-        .sidebar-ad { width: 160px; height: 600px; margin: 0 auto; background-color: rgba(30, 41, 59, 0.3); border-radius: 1rem; }
-        .lang-dropdown-button:focus, .lang-dropdown-button:focus-visible { outline: none; box-shadow: 0 0 0 2px #0f172a, 0 0 0 4px #3b82f6; }
-        .lang-dropdown-item:focus, .lang-dropdown-item:focus-visible { outline: none; background-color: #334155; }
+        .sidebar-ad {
+            width: 160px; /* Standard width for skyscraper ads */
+            height: 600px; /* Standard height */
+            margin: 0 auto;
+            background-color: rgba(30, 41, 59, 0.3);
+            border-radius: 1rem;
+        }
+        .lang-switcher a {
+            transition: all 0.2s ease-in-out;
+        }
+        .lang-switcher a:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body class="text-slate-100">
 
-    <div class="bg-slate-900/50 py-2 px-4 mb-4">
-        <div class="max-w-7xl mx-auto flex justify-end">
-            <div class="relative inline-block text-left" id="lang-switcher-wrapper">
-                <button type="button" class="lang-dropdown-button inline-flex items-center justify-center w-full rounded-md border border-slate-600 shadow-sm px-4 py-2 bg-slate-800 text-sm font-medium text-slate-200 hover:bg-slate-700 transition" id="lang-dropdown-button">
-                    <span id="current-lang-flag" class="mr-2 text-lg">🇮🇱</span>
-                    <span id="current-lang-text">עברית</span>
-                    <svg class="ml-2 -mr-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-                <div id="lang-dropdown" class="origin-top-right absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden" role="menu">
-                    <div class="py-1" role="none">
-                        <a href="index.html" onclick="localStorage.setItem('user_lang', 'he')" class="lang-dropdown-item text-slate-200 font-semibold block px-4 py-2 text-sm text-center" role="menuitem">
-                           <span class="flex items-center justify-center text-lg">🇮🇱<span class="mx-2">עברית</span></span>
-                        </a>
-                        <a href="index-en.html" onclick="localStorage.setItem('user_lang', 'en')" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
-                           <span class="flex items-center justify-center text-lg">🇬🇧<span class="mx-2">English</span></span>
-                        </a>
-                        <a href="index-ar.html" onclick="localStorage.setItem('user_lang', 'ar')" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
-                           <span class="flex items-center justify-center text-lg">🇦🇪<span class="mx-2">العربية</span></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <div class="lang-switcher bg-slate-900/50 py-2 px-4 mb-4">
+        <div class="max-w-7xl mx-auto flex justify-end items-center gap-4 text-sm">
+            <a href="index.html" onclick="localStorage.setItem('user_lang', 'he')" class="font-semibold text-white">🇮🇱 עברית</a>
+            <a href="index-en.html" onclick="localStorage.setItem('user_lang', 'en')" class="text-slate-300 hover:text-white">🇬🇧 English</a>
+            <a href="index-ar.html" onclick="localStorage.setItem('user_lang', 'ar')" class="text-slate-300 hover:text-white">🇦🇪 العربية</a>
         </div>
     </div>
 
     <div class="grid lg:grid-cols-[1fr_minmax(0,1280px)_1fr] gap-4">
+        
         <aside class="hidden lg:flex justify-center pt-32">
             <div class="sidebar-ad sticky top-8">
-                <ins class="adsbygoogle" style="display:inline-block;width:160px;height:600px" data-ad-client="ca-pub-6032822392451748" data-ad-slot="2235502204"></ins>
-                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:160px;height:600px"
+                     data-ad-client="ca-pub-6032822392451748"
+                     data-ad-slot="2235502204"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
         </aside>
+
         <div class="container mx-auto p-4 md:p-8 w-full">
             <header class="text-center mb-12 animate-slide-up">
-                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">מחשבון חיסכון וקצבה מתקדם</h1>
-                <p class="text-lg text-slate-300 max-w-2xl mx-auto">גלה את אפקט הריבית דריבית ותכנן את עתידך הפיננסי באופן מדויק ואסטרטגי.</p>
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                    מחשבון חיסכון וקצבה מתקדם
+                </h1>
+                <p class="text-lg text-slate-300 max-w-2xl mx-auto">
+                    גלה את אפקט הריבית דריבית ותכנן את עתידך הפיננסי באופן מדויק ואסטרטגי.
+                </p>
             </header>
+
             <div class="flex gap-2 mb-8 justify-center animate-slide-up" style="animation-delay: 0.2s;">
                 <button id="tabForward" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300 active">תחזית חיסכון</button>
                 <button id="tabReverse" class="tab-modern px-6 py-3 rounded-lg font-semibold text-slate-300">תכנון יעד</button>
             </div>
+
             <div id="forwardCalculator" class="calculator-content animate-slide-up" style="animation-delay: 0.4s;">
                 <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="space-y-8">
                         <div class="glass-card p-6 md:p-8 rounded-2xl">
                             <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text border-b border-blue-400/20 pb-3">שלב 1: פרמטרים לחיסכון</h2>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="input-group"><label for="initialAmount" class="block text-sm font-medium text-slate-300 mb-2">סכום התחלתי (₪)</label><input type="number" id="initialAmount" value="10000" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
-                                <div class="input-group"><label for="monthlyDeposit" class="block text-sm font-medium text-slate-300 mb-2">הפקדה חודשית (₪)</label><input type="number" id="monthlyDeposit" value="500" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
-                                <div class="input-group"><label for="annualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">תשואה שנתית צפויה (%)</label><input type="number" id="annualInterestRate" value="7" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white"></div>
-                                <div class="input-group"><label for="currentAge" class="block text-sm font-medium text-slate-300 mb-2">גיל נוכחי</label><input type="number" id="currentAge" value="24" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                                <div class="input-group">
+                                    <label for="initialAmount" class="block text-sm font-medium text-slate-300 mb-2">סכום התחלתי (₪)</label>
+                                    <input type="number" id="initialAmount" value="10000" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                                </div>
+                                <div class="input-group">
+                                    <label for="monthlyDeposit" class="block text-sm font-medium text-slate-300 mb-2">הפקדה חודשית (₪)</label>
+                                    <input type="number" id="monthlyDeposit" value="500" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                                </div>
+                                <div class="input-group">
+                                    <label for="annualInterestRate" class="block text-sm font-medium text-slate-300 mb-2">תשואה שנתית צפויה (%)</label>
+                                    <input type="number" id="annualInterestRate" value="7" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white">
+                                </div>
+                                <div class="input-group">
+                                    <label for="currentAge" class="block text-sm font-medium text-slate-300 mb-2">גיל נוכחי</label>
+                                    <input type="number" id="currentAge" value="24" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                                </div>
                             </div>
-                            <div class="input-group mt-6"><label for="yearsOfSaving" class="block text-sm font-medium text-slate-300 mb-2">מספר שנות חיסכון</label><input type="number" id="yearsOfSaving" value="40" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                            <div class="input-group mt-6">
+                                <label for="yearsOfSaving" class="block text-sm font-medium text-slate-300 mb-2">מספר שנות חיסכון</label>
+                                <input type="number" id="yearsOfSaving" value="40" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                            
                             <h3 class="text-lg font-semibold text-slate-300 mt-8 mb-4">הנחות מתקדמות</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="input-group"><label class="switch-label text-slate-300 mb-2"><div class="switch-modern" data-for="includeInflation"><div class="switch-handle"></div></div><span>התחשב באינפלציה</span><input type="checkbox" id="includeInflation" class="hidden"></label><input type="number" id="inflationRate" value="2.5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled><label class="text-xs text-slate-400 mt-1">אחוז אינפלציה שנתי</label></div>
-                                <div class="input-group"><label class="switch-label text-slate-300 mb-2"><div class="switch-modern" data-for="includeTax"><div class="switch-handle"></div></div><span>התחשב במס רווחי הון</span><input type="checkbox" id="includeTax" class="hidden"></label><input type="number" id="taxRate" value="25" min="0" max="100" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled><label class="text-xs text-slate-400 mt-1">אחוז מס על רווחים ריאליים</label></div>
+                                <div class="input-group">
+                                    <label class="switch-label text-slate-300 mb-2">
+                                        <div class="switch-modern" data-for="includeInflation">
+                                            <div class="switch-handle"></div>
+                                        </div>
+                                        <span>התחשב באינפלציה</span>
+                                        <input type="checkbox" id="includeInflation" class="hidden">
+                                    </label>
+                                    <input type="number" id="inflationRate" value="2.5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled>
+                                    <label class="text-xs text-slate-400 mt-1">אחוז אינפלציה שנתי</label>
+                                </div>
+                                <div class="input-group">
+                                    <label class="switch-label text-slate-300 mb-2">
+                                        <div class="switch-modern" data-for="includeTax">
+                                            <div class="switch-handle"></div>
+                                        </div>
+                                        <span>התחשב במס רווחי הון</span>
+                                        <input type="checkbox" id="includeTax" class="hidden">
+                                    </label>
+                                    <input type="number" id="taxRate" value="25" min="0" max="100" step="0.1" class="w-full p-3 rounded-lg input-modern text-white mt-2" disabled>
+                                    <label class="text-xs text-slate-400 mt-1">אחוז מס על רווחים ריאליים</label>
+                                </div>
                             </div>
+
                             <div class="space-y-4 mt-8">
-                                <div class="result-card glass-card p-4 rounded-xl"><div class="flex justify-between items-start"><h3 class="text-slate-400 text-sm font-medium">תחזית (אסטרטגיה דינמית)</h3><button id="useStrategyButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button></div><p id="futureValue" class="text-white text-3xl font-bold -mt-1">₪0</p><div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2"><div><span class="block">סה"כ הפקדות</span><span id="totalDeposits" class="font-semibold text-slate-300">₪0</span></div><div><span class="block">סה"כ תשואה</span><span id="totalInterest" class="font-semibold text-green-400">₪0</span></div></div><div id="realValueStrategy" class="text-xs text-cyan-300 mt-2"></div></div>
-                                <div class="result-card glass-card p-4 rounded-xl"><div class="flex justify-between items-start"><h3 class="text-slate-400 text-sm font-medium">תחזית (הפקדה רציפה)</h3><button id="useFullDepositButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button></div><p id="fullDepositResult" class="text-white text-xl font-bold -mt-1">₪0</p><div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2"><div><span class="block">סה"כ הפקדות</span><span id="fullTotalDeposits" class="font-semibold text-slate-300">₪0</span></div><div><span class="block">סה"כ תשואה</span><span id="fullTotalInterest" class="font-semibold text-green-400">₪0</span></div></div><div id="realValueFull" class="text-xs text-cyan-300 mt-2"></div></div>
-                                <div id="strategyCard" class="result-card glass-card p-4 rounded-xl bg-indigo-900/10 border-indigo-500/30"><h3 class="text-indigo-300 text-sm font-medium">אבני דרך באסטרטגיה הדינמית</h3><div id="strategyResult" class="text-white text-sm space-y-2 mt-2"></div></div>
+                                <div class="result-card glass-card p-4 rounded-xl">
+                                    <div class="flex justify-between items-start">
+                                        <h3 class="text-slate-400 text-sm font-medium">תחזית (אסטרטגיה דינמית)</h3>
+                                        <button id="useStrategyButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button>
+                                    </div>
+                                    <p id="futureValue" class="text-white text-3xl font-bold -mt-1">₪0</p>
+                                    <div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2">
+                                        <div><span class="block">סה"כ הפקדות</span><span id="totalDeposits" class="font-semibold text-slate-300">₪0</span></div>
+                                        <div><span class="block">סה"כ תשואה</span><span id="totalInterest" class="font-semibold text-green-400">₪0</span></div>
+                                    </div>
+                                    <div id="realValueStrategy" class="text-xs text-cyan-300 mt-2"></div>
+                                </div>
+                                <div class="result-card glass-card p-4 rounded-xl">
+                                    <div class="flex justify-between items-start">
+                                        <h3 class="text-slate-400 text-sm font-medium">תחזית (הפקדה רציפה)</h3>
+                                        <button id="useFullDepositButton" class="hidden btn-primary px-3 py-1 rounded-md text-xs font-semibold text-white">העתק</button>
+                                    </div>
+                                    <p id="fullDepositResult" class="text-white text-xl font-bold -mt-1">₪0</p>
+                                    <div class="text-sm text-slate-400 mt-2 grid grid-cols-2 gap-2">
+                                        <div><span class="block">סה"כ הפקדות</span><span id="fullTotalDeposits" class="font-semibold text-slate-300">₪0</span></div>
+                                        <div><span class="block">סה"כ תשואה</span><span id="fullTotalInterest" class="font-semibold text-green-400">₪0</span></div>
+                                    </div>
+                                    <div id="realValueFull" class="text-xs text-cyan-300 mt-2"></div>
+                                </div>
+                                <div id="strategyCard" class="result-card glass-card p-4 rounded-xl bg-indigo-900/10 border-indigo-500/30">
+                                    <h3 class="text-indigo-300 text-sm font-medium">אבני דרך באסטרטגיה הדינמית</h3>
+                                    <div id="strategyResult" class="text-white text-sm space-y-2 mt-2"></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="chart-container"><canvas id="savingsChart"></canvas></div>
+                        <div class="chart-container">
+                            <canvas id="savingsChart"></canvas>
+                        </div>
                     </div>
                     <div class="space-y-8">
                         <div class="glass-card p-6 md:p-8 rounded-2xl">
                             <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text border-b border-amber-400/20 pb-3">שלב 2: תכנון קצבה</h2>
-                            <div class="input-group mb-4"><label for="totalSavings" class="block text-sm font-medium text-slate-300 mb-2">סכום ההון שנצבר (₪)</label><input type="number" id="totalSavings" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
-                            <div class="input-group mb-4"><label for="pensionInterestRate" class="block text-sm font-medium text-slate-300 mb-2">תשואה שנתית על הצבירה (%)</label><input type="number" id="pensionInterestRate" value="5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white"></div>
-                            <div class="input-group mb-4"><label for="yearsOfWithdrawal" class="block text-sm font-medium text-slate-300 mb-2">מספר שנות משיכה</label><input type="number" id="yearsOfWithdrawal" value="30" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
+                            <div class="input-group mb-4">
+                                <label for="totalSavings" class="block text-sm font-medium text-slate-300 mb-2">סכום ההון שנצבר (₪)</label>
+                                <input type="number" id="totalSavings" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                            <div class="input-group mb-4">
+                                <label for="pensionInterestRate" class="block text-sm font-medium text-slate-300 mb-2">תשואה שנתית על הצבירה (%)</label>
+                                <input type="number" id="pensionInterestRate" value="5" min="0" step="0.1" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                            <div class="input-group mb-4">
+                                <label for="yearsOfWithdrawal" class="block text-sm font-medium text-slate-300 mb-2">מספר שנות משיכה</label>
+                                <input type="number" id="yearsOfWithdrawal" value="30" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
                             <div class="space-y-3 mt-6">
-                                <div class="result-card glass-card p-3 rounded-lg"><h3 class="text-slate-400 text-xs">קצבה חודשית (למיצוי הקרן)</h3><p id="monthlyPension" class="text-amber-400 text-2xl font-bold">₪0</p></div>
-                                <div class="result-card glass-card p-3 rounded-lg"><h3 class="text-slate-400 text-xs flex items-center relative group">משיכה בת-קיימא<span class="info-icon ml-2" tabindex="0">ⓘ</span><div class="absolute bottom-full right-1/2 translate-x-1/2 mb-2 w-64 p-3 bg-slate-700 rounded-lg shadow-lg text-sm text-slate-200 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10">משיכה מרווחי ההון בלבד (התשואה), מבלי לפגוע בסכום הקרן המקורי. מבטיח שההון לא יתכלה עם הזמן.</div></h3><p id="sustainableWithdrawal" class="text-green-400 text-2xl font-bold">₪0</p></div>
-                                <div class="result-card glass-card p-3 rounded-lg"><h3 class="text-slate-400 text-xs">משיכה עם צמיחה ריאלית (2%)</h3><p id="growingWithdrawal" class="text-sky-400 text-2xl font-bold">₪0</p></div>
+                                <div class="result-card glass-card p-3 rounded-lg">
+                                    <h3 class="text-slate-400 text-xs">קצבה חודשית (למיצוי הקרן)</h3>
+                                    <p id="monthlyPension" class="text-amber-400 text-2xl font-bold">₪0</p>
+                                </div>
+                                <div class="result-card glass-card p-3 rounded-lg">
+                                    <h3 class="text-slate-400 text-xs flex items-center relative group">
+                                        משיכה בת-קיימא
+                                        <span class="info-icon ml-2" tabindex="0">ⓘ</span>
+                                        <div class="absolute bottom-full right-1/2 translate-x-1/2 mb-2 w-64 p-3 bg-slate-700 rounded-lg shadow-lg text-sm text-slate-200 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10">
+                                            משיכה מרווחי ההון בלבד (התשואה), מבלי לפגוע בסכום הקרן המקורי. מבטיח שההון לא יתכלה עם הזמן.
+                                        </div>
+                                    </h3>
+                                    <p id="sustainableWithdrawal" class="text-green-400 text-2xl font-bold">₪0</p>
+                                </div>
+                                <div class="result-card glass-card p-3 rounded-lg">
+                                    <h3 class="text-slate-400 text-xs">משיכה עם צמיחה ריאלית (2%)</h3>
+                                    <p id="growingWithdrawal" class="text-sky-400 text-2xl font-bold">₪0</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="chart-container"><canvas id="pensionChart"></canvas></div>
+                        <div class="chart-container">
+                            <canvas id="pensionChart"></canvas>
+                        </div>
                     </div>
                 </main>
             </div>
+
             <div id="reverseCalculator" class="calculator-content hidden">
                 <main class="glass-card p-6 md:p-8 rounded-2xl">
                     <h2 class="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text border-b border-emerald-400/20 pb-3">חישוב הפוך: מהי ההפקדה הנדרשת?</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <h3 class="text-lg font-semibold text-slate-300 mb-4">הגדרת היעד</h3>
-                            <div class="input-group mb-4"><label for="revDesiredIncome" class="block text-sm font-medium text-slate-300 mb-2">הכנסה חודשית רצויה (₪)</label><input type="number" id="revDesiredIncome" value="10000" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
-                            <div class="input-group mb-4"><label class="block text-sm font-medium text-slate-300 mb-2">סוג ההכנסה</label><div class="flex gap-4"><label class="radio-label text-slate-300"><input type="radio" name="revGoalType" value="standardPension" checked class="hidden"><div class="radio-indicator"></div><span>קצבה רגילה</span></label><label class="radio-label text-slate-300"><input type="radio" name="revGoalType" value="growingPension" class="hidden"><div class="radio-indicator"></div><span>משיכה עם צמיחה</span></label></div></div>
+                            <div class="input-group mb-4">
+                                <label for="revDesiredIncome" class="block text-sm font-medium text-slate-300 mb-2">הכנסה חודשית רצויה (₪)</label>
+                                <input type="number" id="revDesiredIncome" value="10000" min="0" class="w-full p-3 rounded-lg input-modern text-white">
+                            </div>
+                            <div class="input-group mb-4">
+                                <label class="block text-sm font-medium text-slate-300 mb-2">סוג ההכנסה</label>
+                                <div class="flex gap-4">
+                                    <label class="radio-label text-slate-300"><input type="radio" name="revGoalType" value="standardPension" checked class="hidden"><div class="radio-indicator"></div><span>קצבה רגילה</span></label>
+                                    <label class="radio-label text-slate-300"><input type="radio" name="revGoalType" value="growingPension" class="hidden"><div class="radio-indicator"></div><span>משיכה עם צמיחה</span></label>
+                                </div>
+                            </div>
                             <div class="grid grid-cols-2 gap-4 mt-4">
                                 <div class="input-group"><label for="revPensionStartAge" class="block text-sm font-medium text-slate-300 mb-2">גיל תחילת קצבה</label><input type="number" id="revPensionStartAge" value="67" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
                                 <div class="input-group"><label for="revCurrentAge" class="block text-sm font-medium text-slate-300 mb-2">גיל נוכחי</label><input type="number" id="revCurrentAge" value="24" min="0" class="w-full p-3 rounded-lg input-modern text-white"></div>
@@ -189,15 +314,28 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-semibold text-slate-300 mb-4">התוצאה: תוכנית הפעולה</h3>
-                            <div class="space-y-4"><div class="result-card glass-card p-4 rounded-xl bg-emerald-900/20 border-emerald-500/30"><h3 class="text-emerald-300 text-sm font-medium">הפקדה חודשית נדרשת</h3><p id="revRequiredDeposit" class="text-white text-4xl font-bold">₪0</p></div><div class="result-card glass-card p-4 rounded-xl"><h3 class="text-slate-400 text-sm font-medium">הון נדרש בגיל הפרישה (נטו)</h3><p id="revRequiredCapital" class="text-white text-2xl font-bold">₪0</p></div><div id="revStrategyCard" class="result-card glass-card p-4 rounded-xl bg-indigo-900/10 border-indigo-500/30"><h3 class="text-indigo-300 text-sm font-medium">אבני הדרך באסטרטגיה</h3><div id="revStrategyResult" class="text-white text-sm space-y-2 mt-2"></div></div></div>
+                            <div class="space-y-4">
+                                <div class="result-card glass-card p-4 rounded-xl bg-emerald-900/20 border-emerald-500/30"><h3 class="text-emerald-300 text-sm font-medium">הפקדה חודשית נדרשת</h3><p id="revRequiredDeposit" class="text-white text-4xl font-bold">₪0</p></div>
+                                <div class="result-card glass-card p-4 rounded-xl"><h3 class="text-slate-400 text-sm font-medium">הון נדרש בגיל הפרישה (נטו)</h3><p id="revRequiredCapital" class="text-white text-2xl font-bold">₪0</p></div>
+                                <div id="revStrategyCard" class="result-card glass-card p-4 rounded-xl bg-indigo-900/10 border-indigo-500/30"><h3 class="text-indigo-300 text-sm font-medium">אבני הדרך באסטרטגיה</h3><div id="revStrategyResult" class="text-white text-sm space-y-2 mt-2"></div></div>
+                            </div>
                         </div>
                     </div>
                 </main>
             </div>
+            
             <div class="ad-banner animate-slide-up" style="animation-delay: 0.5s;">
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6032822392451748" data-ad-slot="6652710628" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-6032822392451748"
+                     data-ad-slot="6652710628"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
+
             <section class="mt-12 glass-card p-8 rounded-2xl animate-slide-up" style="animation-delay: 0.6s;">
                 <h2 class="text-3xl font-bold text-center mb-8 text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text">המדריך להשקעה חכמה</h2>
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-slate-300">
@@ -207,18 +345,34 @@
                     <div class="p-4 rounded-lg hover:bg-white/5 transition-colors"><h3 class="text-xl font-semibold text-green-400 mb-3">אופטימיזציה: אסטרטגיה דינמית</h3><p class="leading-relaxed">בתחילת הדרך, ההפקדות שלך הן מנוע הצמיחה העיקרי. עם הזמן, הריבית דריבית הופכת למנוע החזק יותר. אסטרטגיה דינמית מזהה את נקודת המפנה הזו ומאפשרת לך להפחית את ההפקדות, מבלי לפגוע ביעד הסופי, ובכך לשחרר לך תזרים מזומנים.</p></div>
                 </div>
             </section>
+
             <footer class="mt-12">
                 <div class="ad-banner animate-slide-up" style="animation-delay: 0.7s;">
-                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6032822392451748" data-ad-slot="3564562601" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-6032822392451748"
+                         data-ad-slot="3564562601"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
                 </div>
-                <p class="text-center text-slate-400 mt-8 mb-4">פותח ע״י סלים חניפס © 2025. כל הזכויות שמורות.</p>
+                <p class="text-center text-slate-400 mt-8 mb-4">
+                    פותח ע״י סלים חניפס © 2025. כל הזכויות שמורות.
+                </p>
             </footer>
         </div>
+
         <aside class="hidden lg:flex justify-center pt-32">
             <div class="sidebar-ad sticky top-8">
-                 <ins class="adsbygoogle" style="display:inline-block;width:160px;height:600px" data-ad-client="ca-pub-6032822392451748" data-ad-slot="6461138934"></ins>
-                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                 <ins class="adsbygoogle"
+                     style="display:inline-block;width:160px;height:600px"
+                     data-ad-client="ca-pub-6032822392451748"
+                     data-ad-slot="6461138934"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
         </aside>
 
@@ -597,7 +751,6 @@
         }
 
         function setupEventListeners() {
-            // Input listeners from original file (unchanged)
             const forwardInputs = [ DOMElements.initialAmount, DOMElements.monthlyDeposit, DOMElements.annualInterestRate, DOMElements.currentAge, DOMElements.yearsOfSaving, DOMElements.inflationRate, DOMElements.taxRate ];
             forwardInputs.forEach(el => el && el.addEventListener('input', handleForwardCalculations));
             const pensionInputs = [ DOMElements.totalSavings, DOMElements.pensionInterestRate, DOMElements.yearsOfWithdrawal ];
@@ -605,53 +758,20 @@
             const reverseInputs = [ DOMElements.revDesiredIncome, DOMElements.revPensionStartAge, DOMElements.revCurrentAge, DOMElements.revInitialAmount, DOMElements.revAnnualInterestRate, DOMElements.revYearsOfWithdrawal, DOMElements.revInflationRate, DOMElements.revTaxRate ];
             reverseInputs.forEach(el => el && el.addEventListener('input', handleReverseCalculations));
             DOMElements.revGoalTypeRadios.forEach(radio => radio.addEventListener('change', handleReverseCalculations));
-            
-            // Toggle listeners from original file (unchanged)
             if (DOMElements.includeInflation) setupToggle(DOMElements.includeInflation, DOMElements.inflationRate, DOMElements.inflationSwitch);
             if (DOMElements.includeTax) setupToggle(DOMElements.includeTax, DOMElements.taxRate, DOMElements.taxSwitch);
             if (DOMElements.revIncludeInflation) setupToggle(DOMElements.revIncludeInflation, DOMElements.revInflationRate, DOMElements.revInflationSwitch);
             if (DOMElements.revIncludeTax) setupToggle(DOMElements.revIncludeTax, DOMElements.revTaxRate, DOMElements.revTaxSwitch);
-            
-            // Button listeners from original file (unchanged)
             if (DOMElements.useStrategyButton) DOMElements.useStrategyButton.addEventListener('click', (e) => { DOMElements.totalSavings.value = e.currentTarget.dataset.amount; calculatePension(); });
             if (DOMElements.useFullDepositButton) DOMElements.useFullDepositButton.addEventListener('click', (e) => { DOMElements.totalSavings.value = e.currentTarget.dataset.amount; calculatePension(); });
-            
-            // Tab listeners from original file (unchanged)
             if (DOMElements.tabForward) DOMElements.tabForward.addEventListener('click', () => {
-                DOMElements.tabForward.classList.add('active');
-                DOMElements.tabReverse.classList.remove('active');
-                DOMElements.forwardCalculator.classList.remove('hidden');
-                DOMElements.reverseCalculator.classList.add('hidden');
+                DOMElements.tabForward.classList.add('active'); DOMElements.tabReverse.classList.remove('active');
+                DOMElements.forwardCalculator.classList.remove('hidden'); DOMElements.reverseCalculator.classList.add('hidden');
             });
             if (DOMElements.tabReverse) DOMElements.tabReverse.addEventListener('click', () => {
-                DOMElements.tabReverse.classList.add('active');
-                DOMElements.tabForward.classList.remove('active');
-                DOMElements.reverseCalculator.classList.remove('hidden');
-                DOMElements.forwardCalculator.classList.add('hidden');
+                DOMElements.tabReverse.classList.add('active'); DOMElements.tabForward.classList.remove('active');
+                DOMElements.reverseCalculator.classList.remove('hidden'); DOMElements.forwardCalculator.classList.add('hidden');
                 handleReverseCalculations();
-            });
-
-            // --- CORRECTED LANGUAGE SWITCHER LOGIC ---
-            const langWrapper = document.getElementById('lang-switcher-wrapper');
-            const langButton = document.getElementById('lang-dropdown-button');
-            const langDropdown = document.getElementById('lang-dropdown');
-
-            // Add a single event listener to the document to handle all clicks
-            document.addEventListener('click', (event) => {
-                // Check if the click is inside the language switcher wrapper
-                if (langWrapper && langWrapper.contains(event.target)) {
-                    // If the click is specifically on the button, toggle the dropdown
-                    if (langButton && langButton.contains(event.target)) {
-                        langDropdown.classList.toggle('hidden');
-                    }
-                    // If the click is inside the wrapper but not the button (e.g., on a language link),
-                    // the link's default action will navigate, and we don't need to do anything here.
-                } else {
-                    // If the click is outside the wrapper, always hide the dropdown if it's open
-                    if (langDropdown && !langDropdown.classList.contains('hidden')) {
-                        langDropdown.classList.add('hidden');
-                    }
-                }
             });
         }
 
