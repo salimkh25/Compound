@@ -137,18 +137,18 @@
                 </button>
                 <div id="lang-dropdown" class="origin-top-right absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-slate-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-10 hidden" role="menu">
                     <div class="py-1" role="none">
-                        <a href="index.html" onclick="setCookie('user_lang', 'he', 365)" class="lang-dropdown-item text-slate-200 font-semibold block px-4 py-2 text-sm text-center" role="menuitem">
+                        <a href="#" data-lang="he" data-page="index.html" class="lang-link lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
                            <span class="flex items-center justify-center text-lg">🇮🇱<span class="mx-2">עברית</span></span>
                         </a>
-                        <a href="index-en.html" onclick="setCookie('user_lang', 'en', 365)" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
+                        <a href="#" data-lang="en" data-page="index-en.html" class="lang-link lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
                            <span class="flex items-center justify-center text-lg">🇬🇧<span class="mx-2">English</span></span>
                         </a>
-                        <a href="index-ar.html" onclick="setCookie('user_lang', 'ar', 365)" class="lang-dropdown-item text-slate-300 hover:bg-slate-700 hover:text-white block px-4 py-2 text-sm text-center" role="menuitem">
+                        <a href="#" data-lang="ar" data-page="index-ar.html" class="lang-link lang-dropdown-item text-slate-200 font-semibold block px-4 py-2 text-sm text-center" role="menuitem">
                            <span class="flex items-center justify-center text-lg">🇦🇪<span class="mx-2">العربية</span></span>
                         </a>
                     </div>
                 </div>
-            </div>
+                </div>
         </div>
     </div>
 
@@ -638,25 +638,47 @@
             input.disabled = !checkbox.checked;
             switchEl.classList.toggle('active', checkbox.checked);
         }
-        // Cookie helper functions for language switcher
-function setCookie(name, value, days = 365) {
-    const expires = new Date();
-    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-    document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
-}
 
-function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
+        function setCookie(name, value, days = 365) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // === NEW JAVASCRIPT FUNCTION START ===
+        function handleLanguageChange(event) {
+            // Prevents the default link behavior
+            event.preventDefault(); 
+
+            // Finds the main link element, even if a child element was clicked
+            const link = event.target.closest('.lang-link');
+            if (!link) return;
+
+            const lang = link.dataset.lang;
+            const page = link.dataset.page;
+
+            if (lang && page) {
+                // 1. Set the cookie
+                setCookie('user_lang', lang, 365);
+                // 2. Navigate to the new page
+                window.location.href = page;
+            }
+        }
+        // === NEW JAVASCRIPT FUNCTION END ===
 
         function setupEventListeners() {
+            // Input listeners
             const forwardInputs = [ DOMElements.initialAmount, DOMElements.monthlyDeposit, DOMElements.annualInterestRate, DOMElements.currentAge, DOMElements.yearsOfSaving, DOMElements.inflationRate, DOMElements.taxRate ];
             forwardInputs.forEach(el => el && el.addEventListener('input', handleForwardCalculations));
             const pensionInputs = [ DOMElements.totalSavings, DOMElements.pensionInterestRate, DOMElements.yearsOfWithdrawal ];
@@ -664,12 +686,18 @@ function getCookie(name) {
             const reverseInputs = [ DOMElements.revDesiredIncome, DOMElements.revPensionStartAge, DOMElements.revCurrentAge, DOMElements.revInitialAmount, DOMElements.revAnnualInterestRate, DOMElements.revYearsOfWithdrawal, DOMElements.revInflationRate, DOMElements.revTaxRate ];
             reverseInputs.forEach(el => el && el.addEventListener('input', handleReverseCalculations));
             DOMElements.revGoalTypeRadios.forEach(radio => radio.addEventListener('change', handleReverseCalculations));
+            
+            // Toggle listeners
             if (DOMElements.includeInflation) setupToggle(DOMElements.includeInflation, DOMElements.inflationRate, DOMElements.inflationSwitch);
             if (DOMElements.includeTax) setupToggle(DOMElements.includeTax, DOMElements.taxRate, DOMElements.taxSwitch);
             if (DOMElements.revIncludeInflation) setupToggle(DOMElements.revIncludeInflation, DOMElements.revInflationRate, DOMElements.revInflationSwitch);
             if (DOMElements.revIncludeTax) setupToggle(DOMElements.revIncludeTax, DOMElements.revTaxRate, DOMElements.revTaxSwitch);
+            
+            // Button listeners
             if (DOMElements.useStrategyButton) DOMElements.useStrategyButton.addEventListener('click', (e) => { DOMElements.totalSavings.value = e.currentTarget.dataset.amount; calculatePension(); });
             if (DOMElements.useFullDepositButton) DOMElements.useFullDepositButton.addEventListener('click', (e) => { DOMElements.totalSavings.value = e.currentTarget.dataset.amount; calculatePension(); });
+            
+            // Tab listeners
             if (DOMElements.tabForward) DOMElements.tabForward.addEventListener('click', () => {
                 DOMElements.tabForward.classList.add('active');
                 DOMElements.tabReverse.classList.remove('active');
@@ -684,21 +712,30 @@ function getCookie(name) {
                 handleReverseCalculations();
             });
 
+            // Language Switcher Dropdown Toggle
             const langWrapper = document.getElementById('lang-switcher-wrapper');
             const langButton = document.getElementById('lang-dropdown-button');
             const langDropdown = document.getElementById('lang-dropdown');
 
+            if (langButton) {
+                langButton.addEventListener('click', () => {
+                    langDropdown.classList.toggle('hidden');
+                });
+            }
+
             document.addEventListener('click', (event) => {
-                if (langWrapper && langWrapper.contains(event.target)) {
-                    if (langButton && langButton.contains(event.target)) {
-                        langDropdown.classList.toggle('hidden');
-                    }
-                } else {
+                if (langWrapper && !langWrapper.contains(event.target)) {
                     if (langDropdown && !langDropdown.classList.contains('hidden')) {
                         langDropdown.classList.add('hidden');
                     }
                 }
             });
+
+            // === UPDATED EVENT LISTENER ATTACHMENT ===
+            document.querySelectorAll('.lang-link').forEach(link => {
+                link.addEventListener('click', handleLanguageChange);
+            });
+            // =========================================
         }
 
         function setupRadioButtons() {
