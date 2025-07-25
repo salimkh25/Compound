@@ -10,19 +10,21 @@
             const he_page = 'index.html';
             const en_page = 'index-en.html';
             const ar_page = 'index-ar.html';
+            const ts = '?t=' + new Date().getTime(); // Timestamp to bust cache
+            
             const savedLang = localStorage.getItem('user_lang');
             if (savedLang) {
                 const currentPage = window.location.pathname.split('/').pop();
-                if (savedLang === 'en' && currentPage !== en_page) window.location.replace(en_page);
-                else if (savedLang === 'ar' && currentPage !== ar_page) window.location.replace(ar_page);
-                else if (savedLang === 'he' && currentPage !== he_page) window.location.replace(he_page);
+                if (savedLang === 'en' && currentPage !== en_page) window.location.replace(en_page + ts);
+                else if (savedLang === 'ar' && currentPage !== ar_page) window.location.replace(ar_page + ts);
+                else if (savedLang === 'he' && currentPage !== he_page) window.location.replace(he_page + ts);
                 return;
             }
             const userLang = navigator.language || navigator.userLanguage;
             if (userLang.startsWith('en')) {
-                window.location.replace(en_page);
+                window.location.replace(en_page + ts);
             } else if (userLang.startsWith('he')) {
-                 window.location.replace(he_page);
+                 window.location.replace(he_page + ts);
             }
         })();
     </script>
